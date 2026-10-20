@@ -1,0 +1,1306 @@
+<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><meta name="description" content="Az Number Theory Lab, a single-file course for number theory and integer arithmetic"><title>Az Number Theory Lab</title>
+<style>
+:root{color-scheme:dark;--bg:#111722;--panel:#192230;--panel2:#202b3a;--panel3:#141c27;--line:#2c394b;--line2:#3b4b61;--text:#e8eef7;--muted:#a7b4c7;--subtle:#8190a5;--accent:#8ab4f8;--strong:#c9ddff;--good:#9ed7bd;--warn:#edc477;--bad:#ff929e;--shadow:none;--radius:13px}
+:root[data-theme=light]{color-scheme:light;--bg:#f4f6f8;--panel:#fff;--panel2:#f7f9fb;--panel3:#f0f4f8;--line:#dce2e9;--line2:#cbd4df;--text:#17212d;--muted:#596a7e;--subtle:#718197;--accent:#315fa2;--strong:#244a82;--good:#176b4c;--warn:#8c5c04;--bad:#b33143;--shadow:0 8px 24px rgba(20,35,50,.05)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button,a,select{touch-action:manipulation}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}a{color:var(--accent);text-decoration:none}.muted{color:var(--muted)}.mono,code,pre,textarea{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.topbar{height:64px;position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:18px;padding:0 22px;background:var(--bg);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;color:var(--text)}.brand-mark{width:34px;height:34px;border:1px solid var(--line2);border-radius:10px;background:var(--panel2);display:grid;place-items:center;color:var(--strong);font-weight:850;font-size:15px}.brand strong{display:block;font-size:14px;line-height:1.2}.brand small{display:block;font-size:10px;letter-spacing:.14em;color:var(--muted);margin-top:2px}
+.top-meta{flex:1;color:var(--subtle);font-size:12px;letter-spacing:.02em}
+.top-actions{display:flex;align-items:center;gap:7px}.top-actions label{font-size:11px;color:var(--muted)}
+select,.btn{border:1px solid var(--line2);background:var(--panel3);color:var(--text);border-radius:8px;padding:8px 11px;font-size:12px}.btn{font-weight:600;white-space:nowrap}.btn:hover{border-color:var(--accent);color:var(--strong)}.btn.primary{background:var(--accent);color:#10203a;border-color:var(--accent)}:root[data-theme=light] .btn.primary{color:white}
+.layout{display:grid;grid-template-columns:264px minmax(420px,1fr);max-width:1500px;margin:auto;min-height:calc(100vh - 64px)}
+.sidebar{position:sticky;top:64px;height:calc(100vh - 64px);overflow:auto;border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column}
+.side-title{display:flex;justify-content:space-between;color:var(--subtle);font-size:10px;letter-spacing:.14em;font-weight:800;padding:0 4px 12px}
+.pill,.tag{border:1px solid var(--line2);border-radius:6px;padding:3px 7px;font-size:10px;color:var(--muted);white-space:nowrap}
+.search{display:flex;gap:7px;align-items:center;border:1px solid var(--line);border-radius:9px;background:var(--panel3);height:39px;padding:0 10px;margin-bottom:10px}
+.search input{min-width:0;width:100%;background:transparent;border:0;outline:0;color:var(--text);font-size:12px}
+.search kbd{border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--subtle);font-size:10px}
+.filter{display:block;color:var(--subtle);font-size:11px;margin-bottom:12px}.filter select{display:block;width:100%;max-width:none;margin-top:5px;padding:7px}
+.tree{display:flex;flex-direction:column;gap:12px}
+.group-label{display:flex;justify-content:space-between;color:var(--subtle);font-size:10px;font-weight:800;letter-spacing:.08em;padding:4px 5px}
+.link{width:100%;text-align:left;display:flex;gap:8px;align-items:center;background:transparent;border:1px solid transparent;color:var(--muted);padding:7px 8px;border-radius:8px;min-height:34px}
+.link .num{font:10px ui-monospace,monospace;color:var(--subtle);width:19px;flex:none}
+.link .name{font-size:12px;flex:1}.link .done{color:var(--good)}
+.link:hover{background:var(--panel2);color:var(--text)}
+.link.active{background:var(--panel2);border-color:var(--line2);color:var(--strong)}
+.side-foot{margin-top:auto;border-top:1px solid var(--line);padding-top:14px}
+.progress-row{display:flex;justify-content:space-between;color:var(--subtle);font-size:11px;margin-bottom:7px}
+.progress{height:5px;background:var(--panel2);border-radius:9px;overflow:hidden}.progress>div{height:100%;width:0;background:var(--accent);transition:width .25s}
+.side-actions{display:flex;gap:6px;margin-top:12px}.side-actions .btn{flex:1;padding:7px;font-size:11px}
+main{max-width:920px;width:100%;min-width:0;margin:auto;padding:28px 30px 40px}
+.breadcrumb{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--subtle);margin-bottom:16px}
+.header{padding:2px 2px 22px;border-bottom:1px solid var(--line);margin-bottom:20px}
+.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.13em;font-weight:800;color:var(--accent);margin-bottom:9px}
+.header h1{font-size:clamp(27px,3vw,36px);line-height:1.12;letter-spacing:-.035em;margin:0 0 10px;font-weight:700}
+.header p{font-size:14.5px;color:var(--muted);margin:0 0 14px;max-width:740px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag.good{color:var(--good)}.tag.warn{color:var(--warn)}
+.header-actions{display:flex;gap:7px;margin-top:16px;flex-wrap:wrap}
+.panel{border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow)}
+.panel-head{padding:18px 20px 0}.panel-head h2{font-size:15px;margin:0 0 4px;letter-spacing:-.01em;font-weight:650}.panel-head p{font-size:12.5px;color:var(--muted);margin:0}
+.body{padding:16px 20px 20px}
+.idea{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:20px}
+.idea p{font-size:13.5px;color:var(--muted);margin:0 0 13px}
+.mental{background:var(--panel3);border:1px solid var(--line);border-radius:10px;padding:13px}
+.mental small{color:var(--subtle);font-size:10px;letter-spacing:.11em;text-transform:uppercase}
+.mental strong{display:block;margin:6px 0;font-size:13px;color:var(--strong)}
+.mental p{font-size:12px;color:var(--muted);margin:0}
+.takeaway{padding:11px 13px;border:1px solid var(--line2);background:var(--panel3);border-radius:8px;color:var(--strong);font-size:12.5px;line-height:1.6}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mini{background:var(--panel3);border:1px solid var(--line);border-radius:10px;padding:13px}
+.mini h3{font-size:12px;margin:0 0 7px;font-weight:650}
+.mini p{font-size:12.5px;color:var(--muted);margin:0;line-height:1.6}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}
+.steps li{counter-increment:s;display:flex;gap:10px;color:var(--muted);font-size:12.5px;line-height:1.55}
+.steps li:before{content:counter(s);width:23px;height:23px;flex:none;display:grid;place-items:center;border:1px solid var(--line2);background:var(--panel3);border-radius:6px;color:var(--accent);font:11px ui-monospace,monospace}
+.pseudo{white-space:pre-wrap;overflow:auto;background:var(--panel3);border:1px solid var(--line);border-radius:10px;padding:14px;font:12px/1.75 ui-monospace,monospace;color:var(--strong);margin:0}
+.table-wrap{overflow:auto}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{border-bottom:1px solid var(--line);text-align:left;padding:9px 10px;vertical-align:top}
+th{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--subtle);font-weight:700}
+td{color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tile{padding:12px;background:var(--panel3);border:1px solid var(--line);border-radius:9px}
+.tile span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--subtle)}
+.tile strong{display:block;color:var(--strong);font:700 14px ui-monospace,monospace;margin-top:6px}
+.tile small{font-size:10.5px;color:var(--muted);display:block;margin-top:2px}
+.notice{padding:12px 13px;background:var(--panel3);border:1px solid color-mix(in srgb,var(--warn) 35%,var(--line));border-radius:9px;font-size:12.5px;color:var(--muted);line-height:1.65}
+.notice strong{color:var(--warn)}
+.notice.info{border-color:var(--line2)}.notice.info strong{color:var(--accent)}
+.lab-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lab-top label{font-size:11.5px;color:var(--muted)}
+.lab-input{width:100%;min-height:90px;resize:vertical;background:var(--panel3);border:1px solid var(--line2);border-radius:9px;padding:11px;color:var(--text);font:12px/1.65 ui-monospace,monospace;margin:11px 0}
+.lab-output{padding:13px;background:var(--panel3);border:1px solid var(--line);border-radius:9px;min-height:70px;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--strong);font:12px/1.75 ui-monospace,monospace;overflow-x:auto}
+.lab-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.label{font-size:10px;color:var(--subtle);font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px}
+.code-head{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:11px 13px;background:var(--panel3);border-bottom:1px solid var(--line)}
+.code-editor{display:block;width:100%;min-height:220px;resize:vertical;border:0;border-radius:0;background:var(--panel3);color:var(--text);padding:15px;font:12px/1.7 ui-monospace,monospace;outline:0}
+.code-foot{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:9px 13px;color:var(--subtle);font-size:10px;border-top:1px solid var(--line)}
+.practice{border:1px solid var(--line);background:var(--panel3);border-radius:9px;padding:13px}
+.practice summary{cursor:pointer;font-size:12.5px;font-weight:600}
+.practice p{font-size:12.5px;color:var(--muted);margin:10px 0 0;line-height:1.65}
+.references{display:flex;flex-direction:column;gap:8px}
+.references a{font-size:12.5px;overflow-wrap:anywhere}
+.home-hero{padding:30px;background:linear-gradient(150deg,var(--panel),var(--panel3));border:1px solid var(--line);border-radius:14px;margin-bottom:16px}
+.home-hero h1{font-size:clamp(30px,3.6vw,42px);line-height:1.1;letter-spacing:-.04em;margin:8px 0 14px;font-weight:700}
+.home-hero p{color:var(--muted);font-size:14px;max-width:720px;margin:0 0 18px;line-height:1.65}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.stat strong{display:block;font:700 22px ui-monospace,monospace;color:var(--strong)}
+.stat span{display:block;font-size:10.5px;color:var(--muted);margin-top:3px}
+.chapter-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chapter-card{padding:14px;text-align:left;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text)}
+.chapter-card:hover{border-color:var(--accent)}
+.chapter-card .num{font-size:10px;color:var(--accent);letter-spacing:.09em;font-weight:800}
+.chapter-card strong{display:block;font-size:13px;margin:5px 0;font-weight:650}
+.chapter-card p{font-size:11.5px;color:var(--muted);margin:0;line-height:1.55}
+.toast{position:fixed;z-index:99;bottom:20px;left:50%;transform:translate(-50%,10px);opacity:0;pointer-events:none;background:var(--panel);border:1px solid var(--line2);border-radius:9px;padding:11px 15px;box-shadow:var(--shadow);font-size:12px;transition:opacity .14s,transform .14s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.footer{font-size:10.5px;color:var(--subtle);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:6px 2px 14px;align-items:center}
+@media(max-width:1080px){.layout{grid-template-columns:240px minmax(360px,1fr)}main{padding:24px 22px 36px}}
+@media(max-width:840px){.topbar{height:auto;min-height:60px;flex-wrap:wrap;gap:10px;padding:10px 14px}.top-meta{display:none}.top-actions{margin-left:auto}.top-actions label{display:none}.layout{display:block}.sidebar{position:static;height:auto;max-height:none;border:0;border-bottom:1px solid var(--line);padding:14px}.tree{max-height:260px;overflow:auto}.side-foot{display:none}main{padding:20px 15px 32px}.idea{grid-template-columns:1fr}.mental{order:-1}.stats{grid-template-columns:1fr 1fr}.chapter-cards,.two,.lab-cols{grid-template-columns:1fr}}
+@media(max-width:520px){.brand small{display:none}.brand-mark{width:30px;height:30px}.brand strong{font-size:12px}.top-actions select{max-width:92px;padding:6px;font-size:10px}.top-actions .btn{padding:6px 8px;font-size:10px}.chapter-cards{grid-template-columns:1fr}.tiles{grid-template-columns:1fr}.home-hero{padding:20px}.home-hero h1{font-size:30px}.header h1{font-size:27px}.body,.panel-head{padding-left:15px;padding-right:15px}.footer{display:block}.footer span{display:block;margin-bottom:6px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+@media print{.topbar,.sidebar,.header-actions,.lab-top,.btn,.toast{display:none!important}.layout{display:block}main{padding:0;max-width:none}.panel,.home-hero{break-inside:avoid;box-shadow:none}body{background:#fff;color:#111}}
+</style></head><body>
+
+<header class="topbar">
+  <a class="brand" href="#home" id="homeLink"><span class="brand-mark">Az</span><span><strong>Az Number Theory Lab</strong><small>NUMBER THEORY · INTEGER ARITHMETIC</small></span></a>
+  <div class="top-meta" id="catalogCount"></div>
+  <div class="top-actions">
+    <label for="themeSelect">Theme</label>
+    <select id="themeSelect" aria-label="Theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select>
+    <button class="btn" id="printBtn">Print / PDF</button>
+    <button class="btn" id="exportBtn">Export</button>
+    <button class="btn" id="importBtn">Import</button>
+    <input type="file" id="importFile" accept="application/json,.json" hidden>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" aria-label="Course navigation">
+    <div class="side-title"><span>COURSE CATALOG</span><span class="pill" id="lessonCount">0</span></div>
+    <div class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Search number theory…" aria-label="Search lessons"><kbd>/</kbd></div>
+    <label class="filter">Chapter<select id="chapterFilter"><option value="all">All chapters</option></select></label>
+    <nav class="tree" id="courseTree" aria-label="Lessons"></nav>
+    <div class="side-foot">
+      <div class="progress-row"><span>COURSE PROGRESS</span><strong id="progressText">0 / 0</strong></div>
+      <div class="progress" id="progressBar"><div id="progressFill"></div></div>
+      <div class="side-actions"><button class="btn" data-page="home">Home</button><button class="btn" data-page="progress">Progress</button></div>
+    </div>
+  </aside>
+  <main id="mainView" tabindex="-1" aria-live="polite"></main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   Az Number Theory Lab
+   ============================================================ */
+const CHAPTERS=[
+ {id:"integer-arithmetic",title:"1. Integer arithmetic",desc:"Divisibility, GCD, Euclidean algorithm, extended GCD, Bézout identity and binary GCD.",ids:["divisibility-gcd","euclidean-extended","binary-gcd"]},
+ {id:"modular-arithmetic",title:"2. Modular arithmetic",desc:"Modular exponentiation, modular inverse, Chinese remainder theorem and Euler/Fermat theorems.",ids:["modular-exp","modular-inverse","crt","euler-fermat"]},
+ {id:"primes-tests",title:"3. Prime generation and tests",desc:"Trial division, sieves, Miller-Rabin and Solovay-Strassen.",ids:["trial-sieves","miller-rabin","solovay-strassen"]},
+ {id:"primality-proofs",title:"4. Advanced primality proving",desc:"Pocklington, Proth, Pépin, APR-CL and ECPP.",ids:["pocklington-proth","pepin-apr","ecpp"]},
+ {id:"factorization",title:"5. Factorization methods",desc:"Trial division, Pollard rho, Pollard p−1, Fermat, Dixon, CFRAC, SQUFOF and Williams p+1.",ids:["pollard-rho","pollard-pm1","fermat-dixon","cfract-squfof-williams"]},
+ {id:"discrete-logs",title:"6. Discrete logarithms and finite groups",desc:"Baby-step giant-step, Pollard rho for logs, Pohlig-Hellman and primitive roots.",ids:["bsgs","pollard-log","pohlig-hellman"]},
+ {id:"modular-roots",title:"7. Modular roots and lifting",desc:"Tonelli-Shanks, Cipolla, Hensel lifting and quadratic residues.",ids:["tonelli-shanks","cipolla","hensel"]},
+ {id:"fast-arithmetic",title:"8. Fast integer and polynomial arithmetic",desc:"Karatsuba, Toom-Cook, Schönhage-Strassen, Harvey-van der Hoeven and NTT.",ids:["karatsuba","toom-schonhage","ntt"]},
+ {id:"prime-counting",title:"9. Counting primes and advanced structures",desc:"Prime-counting functions, Meissel-Lehmer, arithmetic functions and Möbius inversion.",ids:["prime-counting","meissel-lehmer","arithmetic-functions"]},
+ {id:"constants-lattices",title:"10. High-precision constants and lattices",desc:"Chudnovsky, Gauss-Legendre π, BBP, spigot algorithms, PSLQ, LLL and BKZ.",ids:["chudnovsky","gauss-legendre","bbp-spigot","pslq-lll"]}
+];
+
+const D={
+ kind:"Concept",status:"Concept lesson",level:2,demo:"none",demoTitle:"Interactive teaching lab",inputKind:"text",refs:[],codeKey:"generic",
+ input:"Integers, a modulus or a mathematical parameter set.",
+ output:"A computed integer, factorization, prime certificate or high-precision value.",
+ invariant:"The mathematical properties the algorithm relies on must hold. Violating them produces wrong results without an error message.",
+ complexity:["Depends on the size of the input","Depends on the algorithm and storage","Measure on representative inputs"],
+ uses:"Use this as one layer inside a larger number theory or cryptographic pipeline.",
+ strength:"Fits the problem it was designed for when the assumptions hold.",
+ limits:"Depends on input size, smoothness and the exact algorithm.",
+ pitfall:"A method that works on small numbers can fail or be impractically slow on large ones.",
+ question:"What is the main idea of this lesson?",
+ trace:null
+};
+function mk(o){
+ const steps=o.steps||["Inspect the input.","Apply the algorithm.","Produce the output.","Check the result."];
+ return Object.assign({},D,{
+  summary:o.summary||"",
+  mental:o.mental||o.title,
+  mentalText:o.mentalText||o.summary||"",
+  problem:o.problem||("How does "+o.title+" work and when should you use it?"),
+  steps:steps,
+  trace:o.trace||steps.map((s,i)=>["Step "+(i+1),s,i===steps.length-1?"Verified":"Step done"]),
+  answer:o.answer||o.summary||"",
+  pseudo:o.pseudo||"",
+  sample:o.sample||"",
+  level:o.level||2
+ },o);
+}
+
+const RAW=[
+/* Chapter 1 */
+{id:"divisibility-gcd",title:"Divisibility and the GCD",level:1,kind:"Foundation",status:"Runnable teaching lab",
+ summary:"Divisibility means one integer divides another with no remainder. The greatest common divisor of two integers is the largest integer that divides both.",
+ mental:"Finding the largest tile that fits both rectangles",
+ mentalText:"You have two rectangles of different sizes. The GCD is the side length of the largest square tile that can tile both exactly.",
+ steps:["Check divisibility: a divides b if b mod a equals 0.","List the divisors of both numbers.","Find the largest common divisor.","Use the Euclidean algorithm for efficiency."],
+ pseudo:"Definition:\n  a | b means there exists an integer k such that b = a * k\n\nGCD properties:\n  gcd(a, 0) = a\n  gcd(a, b) = gcd(b, a mod b)      (Euclidean)\n  gcd(a, b) = gcd(a - b, b)          (subtractive)\n  gcd(a, b) = gcd(|a|, |b|)\n\nIf gcd(a, b) = 1 the numbers are coprime.",
+ invariant:"The GCD is always positive. gcd(0, 0) is undefined by convention, usually taken as 0.",
+ uses:"Fraction simplification, modular arithmetic, cryptography, Diophantine equations.",
+ strength:"Simple to define and efficient to compute.",
+ limits:"For huge integers, the Euclidean algorithm is the only practical method.",
+ pitfall:"The GCD of 0 and any number a is |a|, not 0.",
+ question:"What is gcd(0, 12)?",
+ answer:"12. Every number divides 0, so the largest divisor of 12 that also divides 0 is 12.",
+ demo:"gcd",sample:"1071 462",
+ refs:[["Cohen, A Course in Computational Algebraic Number Theory, Springer 1993","https://link.springer.com/book/10.1007/978-3-662-02945-9"],["Crandall and Pomerance, Prime Numbers: A Computational Perspective, 2nd ed., Springer 2005","https://www.math.dartmouth.edu/~carlp/"],["Knuth, The Art of Computer Programming, Vol. 2, Section 4.5.2","https://www-cs-faculty.stanford.edu/~knuth/taocp.html"]]},
+{id:"euclidean-extended",title:"Euclidean and extended Euclidean algorithm",level:2,kind:"Algorithm",status:"Runnable teaching lab",
+ summary:"The Euclidean algorithm computes the GCD by repeated division. The extended version also finds Bézout coefficients that express the GCD as a linear combination of the inputs.",
+ mental:"Rolling downhill until the remainder stops",
+ mentalText:"Divide the larger by the smaller. Replace the larger with the smaller and the smaller with the remainder. Repeat until the remainder is zero.",
+ steps:["Divide a by b, get remainder r.","Replace a with b and b with r.","Repeat until r = 0. The last nonzero remainder is the GCD.","Extended: backtrack to express the GCD as a linear combination."],
+ pseudo:"Euclidean:\n  while b != 0:\n    a, b = b, a mod b\n  return a\n\nExtended (iterative):\n  old_r, r = a, b\n  old_s, s = 1, 0\n  old_t, t = 0, 1\n  while r != 0:\n    q = old_r // r\n    old_r, r = r, old_r - q * r\n    old_s, s = s, old_s - q * s\n    old_t, t = t, old_t - q * t\n  return old_r, old_s, old_t\n\nBezout: old_s * a + old_t * b = old_r = gcd(a, b)",
+ invariant:"The GCD is unchanged by the replacement. The extended version also produces valid Bézout coefficients at every step.",
+ uses:"Modular inverse, Diophantine equations, continued fractions, rational reconstruction.",
+ strength:"Efficient even for huge integers. Simple to implement.",
+ limits:"Subtractive Euclidean can be slow for numbers with very different magnitudes.",
+ pitfall:"The extended algorithm needs the same care with signs as the basic version. Verify a*old_s + b*old_t = old_r.",
+ question:"For a = 1071 and b = 462, what is the GCD and the Bézout coefficients?",
+ answer:"gcd(1071, 462) = 21, with 1071 × (−9) + 462 × 21 = 21. The coefficients are −9 and 21.",
+ demo:"euclidean-ext",sample:"1071 462",
+ refs:[["Cohen, A Course in Computational Algebraic Number Theory, Section 1.3","https://link.springer.com/book/10.1007/978-3-662-02945-9"],["Knuth, TAOCP Vol. 2, Section 4.5.2, Algorithm X","https://www-cs-faculty.stanford.edu/~knuth/taocp.html"],["Wikipedia, Extended Euclidean algorithm","https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm"]]},
+{id:"binary-gcd",title:"Binary GCD (Stein's algorithm)",level:2,kind:"Algorithm",status:"Runnable teaching lab",
+ summary:"Binary GCD computes the GCD using only subtraction and division by 2. It avoids the modulo operation, which is slow on some hardware.",
+ mental:"Halve until odd, subtract, repeat",
+ mentalText:"Remove factors of 2 from both numbers. If one is even, halve it. If both are odd, subtract the smaller from the larger. Repeat.",
+ steps:["Remove common factors of 2.","If one number is even, halve it.","If both are odd, replace the larger with the difference.","Repeat until one number is zero. The other is the GCD."],
+ pseudo:"binary_gcd(u, v):\n  if u == 0: return v\n  if v == 0: return u\n  shift = 0\n  while ((u | v) & 1) == 0:\n    u >>= 1; v >>= 1; shift++\n  while (u & 1) == 0: u >>= 1\n  do:\n    while (v & 1) == 0: v >>= 1\n    if u > v: u, v = v, u\n    v = v - u\n  while v != 0\n  return u << shift",
+ invariant:"The GCD is multiplied by 2^shift where shift is the number of common factors of 2 removed at the start.",
+ uses:"Embedded systems, hardware GCD units, big integer libraries on CPUs with slow division.",
+ strength:"Uses only shifts, subtraction and comparison. No division needed.",
+ limits:"More iterations than the Euclidean algorithm in the worst case.",
+ pitfall:"The shift count must be restored at the end. Forgetting it gives the GCD divided by a power of two.",
+ question:"Why is binary GCD useful in hardware?",
+ answer:"Shifts and subtraction are much cheaper than integer division on most processors, so binary GCD can be faster despite doing more iterations.",
+ demo:"binary-gcd",sample:"1071 462",
+ refs:[["Stein, Computational problems in algebraic number theory, 1967","https://doi.org/10.1145/321386.321389"],["Knuth, TAOCP Vol. 2, Section 4.5.2, Algorithm B","https://www-cs-faculty.stanford.edu/~knuth/taocp.html"],["Crandall and Pomerance, Section 2.3","https://www.math.dartmouth.edu/~carlp/"]]},
+/* Chapter 2 */
+{id:"modular-exp",title:"Modular exponentiation",level:2,kind:"Algorithm",status:"Runnable teaching lab",
+ summary:"Modular exponentiation computes a^b mod m efficiently using square-and-multiply. It is the core operation in RSA and Diffie-Hellman.",
+ mental:"Squaring and multiplying selectively",
+ mentalText:"Instead of multiplying a by itself b times, use the binary expansion of b. Square the result at each step, multiply by a when the bit is 1.",
+ steps:["Write the exponent in binary.","Start with result = 1.","For each bit from left to right: square the result.","If the bit is 1, multiply by the base.","Reduce modulo m at each step."],
+ pseudo:"modexp(a, b, m):\n  result = 1\n  a = a mod m\n  while b > 0:\n    if b & 1: result = (result * a) mod m\n    a = (a * a) mod m\n    b >>= 1\n  return result\n\nCost: O(log b) multiplications",
+ uses:"RSA encryption and decryption, Diffie-Hellman key exchange, primality tests, cryptographic signatures.",
+ strength:"Reduces O(b) multiplications to O(log b). Handles huge exponents.",
+ limits:"Side-channel attacks can recover the exponent from the timing of the multiplications. Constant-time implementations are needed for security.",
+ pitfall:"Reducing modulo m after each multiplication is essential. Computing a^b first and reducing at the end will overflow.",
+ question:"How many multiplications does modexp(2, 1000, 1000000007) need?",
+ answer:"About 2 × log2(1000) ≈ 20 multiplications. The exact count depends on the number of set bits in the exponent.",
+ demo:"modexp",sample:"2 1000 1000000007",
+ refs:[["Cohen, A Course in Computational Algebraic Number Theory, Section 1.2","https://link.springer.com/book/10.1007/978-3-662-02945-9"],["Knuth, TAOCP Vol. 2, Section 4.6.3","https://www-cs-faculty.stanford.edu/~knuth/taocp.html"],["Wikipedia, Modular exponentiation","https://en.wikipedia.org/wiki/Modular_exponentiation"]]},
+{id:"modular-inverse",title:"Modular inverse",level:2,kind:"Algorithm",status:"Runnable teaching lab",
+ summary:"The modular inverse of a modulo m is the number x such that a × x ≡ 1 (mod m). It exists only when gcd(a, m) = 1.",
+ mental:"Undoing multiplication in modular arithmetic",
+ mentalText:"In normal arithmetic, the inverse of 3 is 1/3. In modular arithmetic, it is the number you multiply by to get back to 1.",
+ steps:["Check that gcd(a, m) = 1.","Run the extended Euclidean algorithm on a and m.","The Bézout coefficient old_s is the inverse.","Reduce old_s modulo m to get a positive value."],
+ pseudo:"modinv(a, m):\n  g, x, y = extended_gcd(a, m)\n  if g != 1: raise error('no inverse')\n  return x mod m\n\nCondition: gcd(a, m) = 1 is necessary and sufficient.",
+ invariant:"a × a^(-1) ≡ 1 (mod m). The inverse is unique modulo m.",
+ uses:"RSA, ECC, CRT reconstruction, solving linear congruences.",
+ strength:"Simple extension of the Euclidean algorithm.",
+ limits:"Does not exist when gcd(a, m) > 1. Fails silently if you forget to check.",
+ pitfall:"Computing a^(-1) mod m when gcd(a, m) > 1 gives a wrong answer. Always check the GCD first.",
+ question:"What is the modular inverse of 7 modulo 13?",
+ answer:"2, because 7 × 2 = 14 ≡ 1 (mod 13).",
+ demo:"modinv",sample:"7 13",
+ refs:[["Cohen, Section 1.3.2 Modular inverse","https://link.springer.com/book/10.1007/978-3-662-02945-9"],["Knuth, TAOCP Vol. 2, Section 4.5.2","https://www-cs-faculty.stanford.edu/~knuth/taocp.html"],["Wikipedia, Modular multiplicative inverse","https://en.wikipedia.org/wiki/Modular_multiplicative_inverse"]]},
+{id:"crt",title:"Chinese remainder theorem",level:3,kind:"Theorem",status:"Runnable teaching lab",
+ summary:"The Chinese remainder theorem says that a system of congruences with pairwise coprime moduli has a unique solution modulo the product of the moduli.",
+ mental:"Reconstructing a number from its remainders",
+ mentalText:"If you know the remainder when divided by 3, by 5 and by 7, you can reconstruct the number modulo 105.",
+ steps:["Check that the moduli are pairwise coprime.","Compute the product M of all moduli.","For each modulus, compute M_i = M / m_i.","Find the inverse of M_i modulo m_i.","Combine: x = sum a_i × M_i × inv(M_i, m_i) mod M."],
+ pseudo:"Given: x ≡ a_1 (mod m_1), ..., x ≡ a_k (mod m_k)\nwith pairwise coprime m_i\n\nM = m_1 × m_2 × ... × m_k\nM_i = M / m_i\nx = sum a_i × M_i × inv(M_i, m_i) mod M",
+ invariant:"The moduli must be pairwise coprime. Without this, a solution may not exist or may not be unique.",
+ uses:"RSA speedup, big integer arithmetic, parallel computation, secret sharing.",
+ strength:"Lets you work with small moduli and combine the results.",
+ limits:"Requires pairwise coprime moduli. Non-coprime moduli need the generalized version with compatibility conditions.",
+ pitfall:"If gcd(m_i, m_j) > 1 and the residues are not compatible, no solution exists.",
+ question:"x ≡ 2 (mod 3), x ≡ 3 (mod 5), x ≡ 2 (mod 7). What is x?",
+ answer:"x = 23. Check: 23 mod 3 = 2, 23 mod 5 = 3, 23 mod 7 = 2.",
+ demo:"crt",sample:"2 3\n3 5\n2 7",
+ refs:[["Cohen, Section 1.4 Chinese remainder theorem","https://link.springer.com/book/10.1007/978-3-662-02945-9"],["Knuth, TAOCP Vol. 2, Section 4.3.2","https://www-cs-faculty.stanford.edu/~knuth/taocp.html"],["Wikipedia, Chinese remainder theorem","https://en.wikipedia.org/wiki/Chinese_remainder_theorem"]]},
+{id:"euler-fermat",title:"Euler and Fermat theorems",level:3,kind:"Theorem",status:"Runnable teaching lab",
+ summary:"Fermat's little theorem: a^(p−1) ≡ 1 (mod p) for prime p and a not divisible by p. Euler's theorem generalizes to a^φ(m) ≡ 1 (mod m) when gcd(a, m) = 1.",
+ mental:"A cycle that always returns to 1",
+ mentalText:"If you keep multiplying by a modulo m, you eventually cycle. The length of the cycle divides φ(m). So a^φ(m) returns to 1.",
+ steps:["Compute φ(m), the number of integers up to m coprime to m.","Check gcd(a, m) = 1.","Then a^φ(m) ≡ 1 (mod m).","For prime m, φ(m) = m − 1, giving Fermat's theorem."],
+ pseudo:"Euler's theorem:\n  if gcd(a, m) = 1 then a^φ(m) ≡ 1 (mod m)\n\nFermat's little theorem:\n  if p is prime and gcd(a, p) = 1 then a^(p-1) ≡ 1 (mod p)\n\nEuler's totient function:\n  φ(p) = p - 1 for prime p\n  φ(p^k) = p^(k-1) (p - 1)\n  φ(mn) = φ(m) φ(n) when gcd(m, n) = 1\n  φ(n) = n × ∏ (1 - 1/p) over distinct primes p | n",
+ uses:"Primality testing (Fermat test), RSA, modular inverse computation, order of elements.",
+ strength:"Foundation of many number theory results and algorithms.",
+ limits:"The converse is not true. a^(m−1) ≡ 1 (mod m) does not imply m is prime. Carmichael numbers satisfy this for all a coprime to m.",
+ pitfall:"Using Fermat's little theorem as a primality test alone gives false positives. Combine with Miller-Rabin.",
+ question:"What is 2^100 mod 101?",
+ answer:"1. Since 101 is prime and gcd(2, 101) = 1, Fermat's little theorem gives 2^100 ≡ 1 (mod 101).",
+ demo:"euler-fermat",sample:"2 101",
+ refs:[["Cohen, Section 1.6 Euler and Fermat","https://link.springer.com/book/10.1007/978-3-662-02945-9"],["Crandall and Pomerance, Section 3.1","https://www.math.dartmouth.edu/~carlp/"],["Wikipedia, Fermat's little theorem","https://en.wikipedia.org/wiki/Fermat%27s_little_theorem"]]},
+/* Chapter 3 */
+{id:"trial-sieves",title:"Trial division and sieves",level:2,kind:"Primality test",status:"Runnable teaching lab",
+ summary:"Trial division tests primality by checking divisibility up to the square root. The Sieve of Eratosthenes finds all primes up to a limit by marking multiples.",
+ mental:"Crossing out numbers on a hundred chart",
+ mentalText:"Start with 2. Cross out every multiple of 2. Move to the next uncrossed number, which is prime, and cross out its multiples. Repeat.",
+ steps:["Create a boolean array of size N+1, all true.","Set index 0 and 1 to false.","For p from 2 to √N: if p is still true, mark all multiples of p as false.","The remaining true indices are primes."],
+ pseudo:"Sieve of Eratosthenes:\n  is_prime = [True] * (N+1)\n  is_prime[0] = is_prime[1] = False\n  for p in range(2, floor(sqrt(N)) + 1):\n    if is_prime[p]:\n      for multiple in range(p*p, N+1, p):\n        is_prime[multiple] = False\n\nTrial division:\n  for d in range(2, floor(sqrt(n)) + 1):\n    if n % d == 0: return False\n  return True",
+ uses:"Small primes, number theory teaching, the first step in many factorization algorithms.",
+ strength:"Very simple and correct. The sieve is fast for finding all primes up to a moderate bound.",
+ limits:"Trial division is O(√n) per number. The basic sieve needs O(N) memory.",
+ pitfall:"The sieve only tests up to √N, not N. If you go beyond √N you waste time without finding new composites.",
+ question:"How many primes are there up to 30?",
+ answer:"10: 2, 3, 5, 7, 11, 13, 17, 19, 23 and 29.",
+ demo:"sieve",sample:"100",
+ refs:[["Crandall and Pomerance, Section 3.1 and 3.2","https://www.math.dartmouth.edu/~carlp/"],["Cohen, Section 1.8 Sieve of Eratosthenes","https://link.springer.com/book/10.1007/978-3-662-02945-9"],["Wikipedia, Sieve of Eratosthenes","https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes"]]},
+{id:"miller-rabin",title:"Miller-Rabin primality test",level:3,kind:"Probabilistic test",status:"Runnable teaching lab",
+ summary:"Miller-Rabin tests primality by writing n−1 = 2^s × d and checking whether a^d ≡ 1 or a^(2^r × d) ≡ −1 for a random base a.",
+ mental:"A witness that certifies compositeness",
+ mentalText:"A base a is a witness that n is composite if a^d is not 1 and no power of 2 in the chain gives −1. If a is not a witness, n is probably prime.",
+ steps:["Write n−1 = 2^s × d with d odd.","Pick a random base a in [2, n−2].","Compute x = a^d mod n.","If x = 1 or x = n−1, pass.","Otherwise square x up to s−1 times. If any is n−1, pass.","Otherwise a is a witness that n is composite."],
+ pseudo:"Miller-Rabin(n, a):\n  d = n - 1\n  s = 0\n  while d is even:\n    d //= 2; s += 1\n  x = modexp(a, d, n)\n  if x == 1 or x == n - 1: return Probably prime\n  for _ in range(s - 1):\n    x = (x * x) mod n\n    if x == n - 1: return Probably prime\n  return Composite\n\nDeterministic bases:\n  n < 2,047: bases 2\n  n < 1,373,653: bases 2, 3\n  n < 25,326,001: bases 2, 3, 5\n  n < 3,215,031,751: bases 2, 3, 5, 7\n  n < 3,474,749,660,383: bases 2, 3, 5, 7, 11, 13, 17",
+ uses:"RSA key generation, cryptographic libraries, primality testing in general.",
+ strength:"Fast, simple and reliable. Very few bases needed for practical sizes.",
+ limits:"Probabilistic unless deterministic bases are used. Error probability is at most 4^(−k) for k random bases.",
+ pitfall:"Using Miller-Rabin on even numbers wastes time. Always handle small cases first.",
+ question:"How many bases are needed for a number below 3.2 trillion?",
+ answer:"Bases 2, 3, 5 and 7 are enough for n < 3,215,031,751. Add 11, 13 and 17 for n < 3,474,749,660,383.",
+ demo:"miller-rabin",sample:"104729",
+ refs:[["Crandall and Pomerance, Section 3.5 Miller-Rabin","https://www.math.dartmouth.edu/~carlp/"],["Cohen, Section 8.2 Miller-Rabin","https://link.springer.com/book/10.1007/978-3-662-02945-9"],["Miller, Riemann's Hypothesis and tests for primality, JCSS 1976","https://doi.org/10.1016/S0022-0000(76)80043-8"]]},
+{id:"solovay-strassen",title:"Solovay-Strassen primality test",level:4,kind:"Probabilistic test",status:"Concept lesson",
+ summary:"Solovay-Strassen uses the Jacobi symbol to test primality. It was historically important but has been largely replaced by Miller-Rabin.",
+ mental:"Checking whether a quadratic residue rule holds",
+ mentalText:"For prime n, the Jacobi symbol equals the Legendre symbol for all bases. If this fails for some base, n is composite.",
+ steps:["Pick a random base a in [1, n−1].","Compute gcd(a, n). If greater than 1, n is composite.","Compute the Jacobi symbol (a/n).","Compute a^((n−1)/2) mod n.","If they differ, n is composite. Otherwise n is probably prime."],
+ pseudo:"Solovay-Strassen(n, a):\n  if gcd(a, n) > 1: return Composite\n  j = jacobi(a, n)\n  x = modexp(a, (n-1)//2, n)\n  if j == 0 or x != j % n: return Composite\n  return Probably prime\n\nError probability: at most 1/2 per base.",
+ uses:"Historical primality testing, teaching the role of the Jacobi symbol.",
+ strength:"Simple to describe and implement.",
+ limits:"Slower than Miller-Rabin for the same error probability.",
+ pitfall:"The Jacobi symbol computation needs care. The naive definition is not computationally efficient.",
+ question:"What is the error probability of Solovay-Strassen with k bases?",
+ answer:"At most 2^(−k).",
+ demo:"none",sample:"",
+ refs:[["Solovay and Strassen, A fast Monte-Carlo test for primality, SIAM J. Comput. 1977","https://doi.org/10.1137/0206006"],["Cohen, Section 8.3 Solovay-Strassen","https://link.springer.com/book/10.1007/978-3-662-02945-9"],["Wikipedia, Solovay-Strassen primality test","https://en.wikipedia.org/wiki/Solovay%E2%80%93Strassen_primality_test"]]},
+/* Chapter 4 */
+{id:"pocklington-proth",title:"Pocklington and Proth tests",level:4,kind:"Primality proof",status:"Concept lesson",
+ summary:"Pocklington proves primality using a partial factorization of n−1. Proth tests numbers of the form k × 2^n + 1 with k odd and k < 2^n.",
+ mental:"Building a certificate from known factors",
+ mentalText:"If you know enough factors of n−1, you can prove n is prime by exhibiting bases that satisfy certain congruences.",
+ steps:["Factor enough of n−1.","For each prime factor q of the factored part, find a base a such that a^(n−1) ≡ 1 and gcd(a^((n−1)/q) − 1, n) = 1.","If the factored part exceeds √n, n is prime.","For Proth numbers, test using a = 3 if n is not a square."],
+ pseudo:"Pocklington theorem:\n  Let n - 1 = F R with F fully factored and F > √n\n  If for each prime q | F there exists a with\n    a^(n-1) ≡ 1 (mod n) and\n    gcd(a^((n-1)/q) - 1, n) = 1\n  then n is prime.\n\nProth's theorem:\n  n = k 2^m + 1 with k odd and k < 2^m\n  If there exists a with a^((n-1)/2) ≡ -1 (mod n)\n  then n is prime.",
+ uses:"Primality proving for specific forms, cryptography, prime number records.",
+ strength:"Produces a verifiable certificate of primality, not just a probabilistic result.",
+ limits:"Requires a partial factorization of n−1. Not practical for general large numbers.",
+ pitfall:"Pocklington's theorem needs F > √n. If the factored part is too small, the proof fails.",
+ question:"What form must n have for Proth's theorem?",
+ answer:"n = k × 2^m + 1 with k odd and k < 2^m.",
+ demo:"none",sample:"",
+ refs:[["Crandall and Pomerance, Section 4.3 Pocklington and Proth","https://www.math.dartmouth.edu/~carlp/"],["Cohen, Section 8.4 Pocklington and Proth","https://link.springer.com/book/10.1007/978-3-662-02945-9"],["Pocklington, The determination of the prime or composite nature of large numbers, 1914","https://doi.org/10.1017/S0305004100015880"]]},
+{id:"pepin-apr",title:"Pépin and APR-CL tests",level:5,kind:"Primality proof",status:"Concept lesson",
+ summary:"Pépin's test checks Fermat numbers F_n = 2^(2^n) + 1 by verifying 3^((F_n−1)/2) ≡ −1. APR-CL is a general-purpose primality proving algorithm.",
+ mental:"Special tests for special forms and a general test for any form",
+ mentalText:"Pépin's test is fast for Fermat numbers because of their special form. APR-CL works for any number but is more complex.",
+ steps:["Pépin: n = 2^(2^k) + 1. Compute 3^((n−1)/2) mod n.","If the result is n−1, n is prime. Otherwise composite.","APR-CL: use Jacobi sums and cyclotomic fields to prove primality.","APR-CL was the first general primality test with subexponential time."],
+ pseudo:"Pépin's test:\n  n = 2^(2^k) + 1\n  if 3^((n-1)/2) ≡ -1 (mod n): prime\n  else: composite\n\nAPR-CL:\n  Uses the theory of Jacobi sums over cyclotomic fields\n  Runtime: O((log n)^(c log log log n))\n  First subexponential primality proving algorithm.",
+ uses:"Fermat number primality testing, number theory research, historical importance.",
+ strength:"Pépin is very fast for Fermat numbers. APR-CL works for any number.",
+ limits:"Pépin only works for Fermat numbers. APR-CL is complex and has been largely replaced by ECPP.",
+ pitfall:"Pépin's test is only valid for Fermat numbers. Applying it to other numbers gives wrong results.",
+ question:"What is the only known Fermat prime beyond 3, 5, 17, 257 and 65537?",
+ answer:"None. F_5 through F_32 have been tested and all are composite. It is unknown whether any Fermat primes beyond F_4 exist.",
+ demo:"none",sample:"",
+ refs:[["Crandall and Pomerance, Section 4.4 Pépin and APR-CL","https://www.math.dartmouth.edu/~carlp/"],["Adleman, Pomerance, Rumely, On distinguishing prime numbers from composite numbers, Annals of Math 1983","https://doi.org/10.2307/2006975"],["Wikipedia, Pépin's test","https://en.wikipedia.org/wiki/P%C3%A9pin%27s_test"]]},
+{id:"ecpp",title:"Elliptic curve primality proving (ECPP)",level:5,kind:"Primality proof",status:"Concept lesson",
+ summary:"ECPP proves primality by constructing an elliptic curve with a specific order related to n. The proof can be verified quickly even though finding it is expensive.",
+ mental:"Building a certificate that anyone can check",
+ mentalText:"You find an elliptic curve whose order factors conveniently. That gives you a smaller number to prove prime. Recurse until you reach a known prime.",
+ steps:["Pick a discriminant D and compute the Hilbert class polynomial.","Find a root modulo n.","Construct an elliptic curve with that j-invariant.","Compute the order of the curve.","Factor enough of the order and recurse on the factors.","The certificate is the chain of curves and factorizations."],
+ pseudo:"ECPP (simplified):\n  1. Choose discriminant D such that n splits in Q(√D)\n  2. Compute j-invariant from the Hilbert class polynomial\n  3. Build elliptic curve E over Z/nZ with that j-invariant\n  4. Compute m = order of E(F_n)\n  5. Write m = c N' with N' > (n^(1/4) + 1)^2\n  6. If N' is prime (recursively), n is prime\n\nExpected time: O((log n)^(4+o(1)))\nCertificate verification: O((log n)^3)",
+ uses:"Primality proving for cryptographic primes, prime number records, verification of large primes.",
+ strength:"Produces a compact certificate that can be verified quickly.",
+ limits:"Finding the certificate is expensive, though the cost is polynomial in log n.",
+ pitfall:"The Hilbert class polynomial has degree equal to the class number. For large discriminants this is expensive to compute.",
+ question:"Why is ECPP's certificate small even for huge primes?",
+ answer:"The certificate is a chain of smaller and smaller elliptic curves and factorizations. Each level shrinks the number, so the total size is polynomial in log n.",
+ demo:"none",sample:"",
+ refs:[["Atkin and Morain, Elliptic curves and primality proving, Math. Comp. 1993","https://doi.org/10.1090/S0025-5718-1993-1199989-X"],["Morain, Implementing the asymptotically fast version of ECPP, Math. Comp. 2007","https://doi.org/10.1090/S0025-5718-06-01890-4"],["Crandall and Pomerance, Section 4.5 ECPP","https://www.math.dartmouth.edu/~carlp/"],["Wikipedia, Elliptic curve primality proving","https://en.wikipedia.org/wiki/Elliptic_curve_primality_proving"]]},
+/* Chapter 5 */
+{id:"pollard-rho",title:"Pollard rho factorization",level:4,kind:"Factorization",status:"Runnable teaching lab",
+ summary:"Pollard rho finds a factor of a composite number by looking for a cycle in a sequence modulo the (unknown) factor. It is fast for small factors.",
+ mental:"A random walk that eventually collides with itself",
+ mentalText:"You generate a sequence of numbers modulo n. If n has a small factor p, the sequence modulo p cycles much faster than modulo n. The collision reveals p.",
+ steps:["Choose a polynomial f(x) = x^2 + c mod n.","Start with x = y = 2.","Iterate x = f(x), y = f(f(y)).","Compute d = gcd(|x − y|, n).","If d is a nontrivial factor, done. If d = n, retry with different c."],
+ pseudo:"Pollard rho(n):\n  if n is even: return 2\n  c = random(1, n-1)\n  x = y = 2\n  d = 1\n  while d == 1:\n    x = (x*x + c) mod n\n    y = (y*y + c) mod n\n    y = (y*y + c) mod n\n    d = gcd(|x - y|, n)\n  if d == n: retry with different c\n  return d\n\nExpected time: O(n^(1/4)) for a factor p ~ sqrt(n)",
+ uses:"Factoring numbers with small factors, elliptic curve discrete logs, RSA attacks on weak keys.",
+ strength:"Simple and effective for finding small factors. Parallelizable.",
+ limits:"Slow for factors of similar size to n. Expected time O(p^(1/2)) where p is the smallest factor.",
+ pitfall:"If d = n, the walk found the same collision for all factors. Change the constant c and retry.",
+ question:"What is the expected number of iterations for Pollard rho to find a factor p?",
+ answer:"About √p iterations by the birthday paradox.",
+ demo:"pollard-rho",sample:"8051",
+ refs:[["Pollard, A Monte Carlo method for factorization, BIT 1975","https://doi.org/10.1007/BF01933667"],["Brent, An improved Monte Carlo factorization algorithm, BIT 1980","https://doi.org/10.1007/BF01933190"],["Crandall and Pomerance, Section 5.2 Pollard rho","https://www.math.dartmouth.edu/~carlp/"]]},
+{id:"pollard-pm1",title:"Pollard p−1 factorization",level:4,kind:"Factorization",status:"Runnable teaching lab",
+ summary:"Pollard p−1 finds a factor p when p−1 is smooth. It computes a^M mod n where M is a multiple of many small primes, and takes the GCD.",
+ mental:"Exploiting a factor that is one more than a smooth number",
+ mentalText:"If p−1 has only small prime factors, then a^M ≡ 1 mod p for a suitable M. So gcd(a^M − 1, n) gives p.",
+ steps:["Choose a smoothness bound B.","Compute M = product of prime powers up to B.","Compute a = 2^M mod n.","Compute d = gcd(a − 1, n).","If d is a nontrivial factor, done. Otherwise increase B or retry."],
+ pseudo:"Pollard p-1(n, B):\n  a = 2\n  for prime q <= B:\n    a = modexp(a, q^floor(log_q(B)), n)\n  d = gcd(a - 1, n)\n  if 1 < d < n: return d\n  else: retry with larger B or different base\n\nSucceeds when the smallest prime factor p satisfies\n  p - 1 is B-smooth.",
+ uses:"Factoring numbers with weak factors, RSA key analysis, number theory research.",
+ strength:"Very fast when it works. Complementary to Pollard rho.",
+ limits:"Fails when p−1 has a large prime factor. Not useful for strong RSA primes.",
+ pitfall:"Using a bound B that is too small misses factors. Too large wastes time.",
+ question:"When is Pollard p−1 likely to succeed?",
+ answer:"When the smallest factor p has p−1 composed entirely of small prime factors. B must be at least as large as the largest prime factor of p−1.",
+ demo:"pollard-pm1",sample:"8051",
+ refs:[["Pollard, Theorems on factorization and primality testing, Proc. Cambridge Phil. Soc. 1974","https://doi.org/10.1017/S0305004100049252"],["Crandall and Pomerance, Section 5.3 Pollard p-1","https://www.math.dartmouth.edu/~carlp/"],["Wikipedia, Pollard's p−1 algorithm","https://en.wikipedia.org/wiki/Pollard%27s_p_%E2%88%92_1_algorithm"]]},
+{id:"fermat-dixon",title:"Fermat and Dixon factorization",level:4,kind:"Factorization",status:"Concept lesson",
+ summary:"Fermat factorization writes n as a difference of squares. Dixon's method uses a factor base and linear algebra over GF(2) to find a congruence of squares.",
+ mental:"Finding two squares that differ by n",
+ mentalText:"If n = a^2 − b^2, then n = (a−b)(a+b). Dixon generalizes this by finding a combination of squares that works.",
+ steps:["Fermat: try a = ceil(√n), b^2 = a^2 − n. If b^2 is a square, done.","Increase a and retry.","Dixon: choose a factor base of small primes.","Find smooth values of x^2 mod n.","Solve a linear system over GF(2) to get a congruence of squares."],
+ pseudo:"Fermat factorization:\n  a = ceil(sqrt(n))\n  while True:\n    b2 = a*a - n\n    if b2 is a perfect square: return (a - sqrt(b2), a + sqrt(b2))\n    a += 1\n\nWorks well when n has factors close together.\n\nDixon's method:\n  1. Choose factor base B\n  2. Find x such that x^2 mod n is B-smooth\n  3. Build a matrix of exponents mod 2\n  4. Find linear dependencies over GF(2)\n  5. Each dependency gives a congruence of squares",
+ uses:"Factoring numbers with close factors, historical importance, basis of the quadratic sieve.",
+ strength:"Fermat is very fast when factors are close. Dixon introduced the factor base idea used in modern methods.",
+ limits:"Fermat is slow when factors are far apart. Dixon is subexponential but slower than the quadratic sieve.",
+ pitfall:"Fermat factorization iterates a from ceil(√n) upward. If the factors are far apart, the loop runs for a very long time.",
+ question:"When does Fermat factorization work best?",
+ answer:"When the two factors are close to each other. Then a = (p+q)/2 is close to √n and the loop terminates quickly.",
+ demo:"none",sample:"",
+ refs:[["Crandall and Pomerance, Section 5.1 Fermat and Section 6.1 Dixon","https://www.math.dartmouth.edu/~carlp/"],["Dixon, Asymptotically fast factorization of integers, Math. Comp. 1981","https://doi.org/10.1090/S0025-5718-1981-0606508-0"],["Wikipedia, Fermat's factorization method","https://en.wikipedia.org/wiki/Fermat%27s_factorization_method"]]},
+{id:"cfract-squfof-williams",title:"CFRAC, SQUFOF and Williams p+1",level:5,kind:"Factorization",status:"Concept lesson",
+ summary:"CFRAC uses continued fractions to find smooth values. SQUFOF uses quadratic forms. Williams p+1 uses Lucas sequences and succeeds when p+1 is smooth.",
+ mental:"Three different smoothness exploits",
+ mentalText:"CFRAC looks for smooth values from continued fraction convergents. SQUFOF looks for ambiguous forms. Williams p+1 works when p+1 is smooth instead of p−1.",
+ steps:["CFRAC: compute convergents of √n, look for smooth values.","SQUFOF: use the continued fraction expansion of √n to find a square form.","Williams: use Lucas sequences V_k with a^2 − 4b and check gcd(V_M − 2, n).","Each method succeeds under a different smoothness condition."],
+ pseudo:"CFRAC:\n  Compute convergents p_k/q_k of sqrt(n)\n  For each k, compute p_k^2 - n q_k^2\n  Look for smooth values\n  Solve a linear system over GF(2)\n\nSQUFOF:\n  Use the continued fraction expansion of sqrt(n)\n  Find an ambiguous form (a, b, c) with a a perfect square\n  The square root gives a factor\n\nWilliams p+1:\n  Choose A, form the Lucas sequence V_0 = 2, V_1 = A\n  V_{k+1} = A V_k - V_{k-1}\n  Compute M as in Pollard p-1\n  d = gcd(V_M - 2, n)",
+ uses:"Factoring medium-sized numbers, historical development of factorization algorithms.",
+ strength:"Each exploits a different smoothness condition. Together they cover more cases than p−1 alone.",
+ limits:"All are superseded for large numbers by the quadratic sieve and the number field sieve.",
+ pitfall:"CFRAC and SQUFOF need careful implementation of continued fractions. Numerical precision is important.",
+ question:"What is the advantage of Williams p+1 over Pollard p−1?",
+ answer:"It succeeds when p+1 is smooth, even if p−1 is not. The two methods are complementary.",
+ demo:"none",sample:"",
+ refs:[["Williams, A p+1 method of factoring, Math. Comp. 1982","https://doi.org/10.1090/S0025-5718-1982-0658227-7"],["Shanks, SQUFOF notes, 1970s (in Cohen Section 8.6)","https://link.springer.com/book/10.1007/978-3-662-02945-9"],["Crandall and Pomerance, Section 5.4 and 5.5","https://www.math.dartmouth.edu/~carlp/"]]},
+/* Chapter 6 */
+{id:"bsgs",title:"Baby-step giant-step",level:4,kind:"Discrete logarithm",status:"Runnable teaching lab",
+ summary:"BSGS solves g^x ≡ h (mod p) in O(√p) time and space by writing x = i × m + j and precomputing a table of baby steps.",
+ mental:"Meeting in the middle of a long walk",
+ mentalText:"Instead of searching all exponents, split the search in half. Build a table of the first half and match against the second half.",
+ steps:["Choose m = ceil(√(p−1)).","Baby steps: compute g^j for j = 0 to m−1, store in a table.","Giant steps: compute h × (g^(−m))^i for i = 0 to m−1.","When a match is found, x = i × m + j."],
+ pseudo:"BSGS(g, h, p):\n  m = ceil(sqrt(p - 1))\n  # Baby steps\n  table = {}\n  e = 1\n  for j in range(m):\n    table[e] = j\n    e = (e * g) mod p\n  # Giant steps\n  factor = modinv(modexp(g, m, p), p)\n  e = h\n  for i in range(m):\n    if e in table:\n      return i * m + table[e]\n    e = (e * factor) mod p\n\nTime and space: O(sqrt(p))",
+ uses:"Small discrete logarithm problems, Pohlig-Hellman subroutine, cryptography teaching.",
+ strength:"Deterministic and simple. Guaranteed to find the solution if it exists.",
+ limits:"Requires O(√p) memory. Impractical for large p.",
+ pitfall:"The table must store the smallest j for each value. Overwriting with a larger j gives the wrong answer.",
+ question:"How much memory does BSGS need for p ≈ 10^12?",
+ answer:"About 10^6 entries, which is manageable. For p ≈ 10^18, it needs 10^9 entries, which is too much.",
+ demo:"bsgs",sample:"2 5 23",
+ refs:[["Shanks, Class number, a theory of factorization, and genera, 1971","https://doi.org/10.1090/pspum/020/0316385"],["Crandall and Pomerance, Section 5.3.2 BSGS","https://www.math.dartmouth.edu/~carlp/"],["Cohen, Section 5.1 BSGS","https://link.springer.com/book/10.1007/978-3-662-02945-9"]]},
+{id:"pollard-log",title:"Pollard rho for discrete logarithms",level:5,kind:"Discrete logarithm",status:"Concept lesson",
+ summary:"Pollard rho for logs uses a random walk on the group and the birthday paradox to find a collision that reveals the discrete logarithm.",
+ mental:"A random walk that eventually collides with itself",
+ mentalText:"You walk randomly in the group, tracking how you got there. When two walks collide, the collision gives an equation you can solve for x.",
+ steps:["Partition the group into three sets.","Define a walk: multiply by g in set 1, by h in set 2, by g^2 in set 3.","Track exponents a, b such that current = g^a × h^b.","Run two walks at different speeds until they collide.","Solve g^(a1−a2) = h^(b2−b1) for x."],
+ pseudo:"Pollard rho for logs:\n  Define walk function f(y) = y × g (set 0), y × h (set 1), y × g^2 (set 2)\n  Track a, b where y = g^a h^b\n  Floyd cycle finding: x = f(x), y = f(f(y))\n  On collision: g^(a_x - a_y) = h^(b_y - b_x)\n  Solve for x: x = (a_x - a_y) / (b_y - b_x) mod (p-1)\n\nExpected time: O(sqrt(p))",
+ uses:"Moderate-size discrete logs, elliptic curve discrete logs, cryptography analysis.",
+ strength:"Uses very little memory compared to BSGS.",
+ limits:"Not deterministic. May need to restart if the denominator is not invertible.",
+ pitfall:"If gcd(b_y − b_x, p−1) > 1, the equation has multiple solutions. You may need to try more than one.",
+ question:"How does Pollard rho for logs compare to BSGS in memory?",
+ answer:"Pollard rho uses O(1) memory while BSGS uses O(√p). Pollard rho is preferable when memory is limited.",
+ demo:"none",sample:"",
+ refs:[["Pollard, Monte Carlo methods for index computation mod p, Math. Comp. 1978","https://doi.org/10.1090/S0025-5718-1978-0491431-9"],["Teske, Speeding up Pollard's rho method for computing discrete logarithms, ANTS 1998","https://doi.org/10.1007/BFb0054860"],["Crandall and Pomerance, Section 5.3.3","https://www.math.dartmouth.edu/~carlp/"]]},
+{id:"pohlig-hellman",title:"Pohlig-Hellman algorithm",level:4,kind:"Discrete logarithm",status:"Runnable teaching lab",
+ summary:"Pohlig-Hellman reduces a discrete logarithm in a group of order N to discrete logs in subgroups of prime order. It works well when N is smooth.",
+ mental:"Break the problem into smaller problems",
+ mentalText:"If N factors into small primes, you can solve the discrete log one prime at a time and combine the answers with the Chinese remainder theorem.",
+ steps:["Factor N into prime powers.","For each prime factor q, solve the discrete log modulo q.","Combine the partial results with CRT.","The full discrete log is the CRT combination."],
+ pseudo:"Pohlig-Hellman:\n  Factor N = q_1^e_1 × ... × q_k^e_k\n  For each prime power q^e:\n    Solve discrete log in the subgroup of order q^e\n    (using BSGS or Pollard rho for the small subgroup)\n  Combine all results with CRT\n\nComplexity: O(sum sqrt(q_i)) + factoring cost",
+ uses:"Solving discrete logs in groups with smooth order, cryptography analysis, teaching.",
+ strength:"Very fast when N is smooth. Reduces a large problem to several small ones.",
+ limits:"Slow when N has a large prime factor. Cryptography uses groups with large prime order to prevent this.",
+ pitfall:"The method requires factoring N. If N is prime, Pohlig-Hellman gives no speedup over BSGS.",
+ question:"Why is it important for cryptographic groups to have large prime order?",
+ answer:"Pohlig-Hellman reduces the discrete log to subgroups of prime order. If the order is a product of small primes, the problem becomes easy.",
+ demo:"pohlig-hellman",sample:"2 5 23",
+ refs:[["Pohlig and Hellman, An improved algorithm for computing logarithms over GF(p), IEEE TIT 1978","https://doi.org/10.1109/TIT.1978.1055833"],["Crandall and Pomerance, Section 5.3.4","https://www.math.dartmouth.edu/~carlp/"],["Cohen, Section 5.2 Pohlig-Hellman","https://link.springer.com/book/10.1007/978-3-662-02945-9"]]},
+/* Chapter 7 */
+{id:"tonelli-shanks",title:"Tonelli-Shanks modular square root",level:4,kind:"Modular root",status:"Runnable teaching lab",
+ summary:"Tonelli-Shanks computes square roots modulo a prime p. It is the standard algorithm for this problem.",
+ mental:"Finding the number that squares to a given value",
+ mentalText:"Given a and p, find x such that x^2 ≡ a (mod p). If no such x exists, a is a quadratic non-residue.",
+ steps:["Check if a is a quadratic residue using Euler's criterion.","Write p−1 = q × 2^s with q odd.","Find a quadratic non-residue z.","Iteratively adjust until you find the square root."],
+ pseudo:"Tonelli-Shanks(p, a):\n  if a^((p-1)/2) != 1 (mod p): return no root\n  Write p - 1 = q 2^s with q odd\n  Find z with z^((p-1)/2) = -1 (mod p)\n  M = s, c = z^q, t = a^q, R = a^((q+1)/2)\n  while t != 1:\n    Find least i with t^(2^i) == 1\n    b = c^(2^(M-i-1))\n    M = i, c = b^2, t = t b^2, R = R b\n  return R",
+ uses:"Quadratic residue computation, cryptography, elliptic curve point decompression.",
+ strength:"Efficient and deterministic for prime moduli.",
+ limits:"Requires p to be prime. For composite moduli, other methods are needed.",
+ pitfall:"p must be prime. Using Tonelli-Shanks on a composite modulus gives wrong answers.",
+ question:"Does 2 have a square root modulo 7?",
+ answer:"Yes, 3 and 4. 3^2 = 9 ≡ 2 (mod 7) and 4^2 = 16 ≡ 2 (mod 7).",
+ demo:"tonelli",sample:"2 7",
+ refs:[["Tonelli, Bemerkung über die Auflösung quadratischer Congruenzen, 1891","https://doi.org/10.1007/BF01199420"],["Shanks, Five number-theoretic algorithms, 1973","https://doi.org/10.1007/BFb0063403"],["Cohen, Section 1.5.1 Tonelli-Shanks","https://link.springer.com/book/10.1007/978-3-662-02945-9"]]},
+{id:"cipolla",title:"Cipolla's algorithm",level:5,kind:"Modular root",status:"Concept lesson",
+ summary:"Cipolla's algorithm computes square roots modulo a prime by working in the field extension GF(p^2). It is an alternative to Tonelli-Shanks.",
+ mental:"Working in a larger field to find the answer",
+ mentalText:"You extend the field with an element that is not a square. In that extension, the square root can be computed directly.",
+ steps:["Find a such that a^2 − n is a quadratic non-residue.","Work in GF(p^2) as polynomials modulo x^2 − (a^2 − n).","Compute (a + x)^((p+1)/2) in this field.","The result is the square root."],
+ pseudo:"Cipolla(p, n):\n  if n^((p-1)/2) != 1: return no root\n  Find a with a^2 - n non-residue mod p\n  Work in GF(p^2) = F_p[x] / (x^2 - (a^2 - n))\n  Compute (a + x)^((p+1)/2)\n  The real part is the square root\n\nExpected time: O(log p) field operations",
+ uses:"Modular square roots, cryptography, elliptic curve arithmetic.",
+ strength:"Simpler than Tonelli-Shanks in some implementations.",
+ limits:"Requires finding a quadratic non-residue, which may take several tries.",
+ pitfall:"The element a must be chosen so that a^2 − n is not a square. Otherwise the field extension is not valid.",
+ question:"How is Cipolla different from Tonelli-Shanks?",
+ answer:"Cipolla works in a quadratic extension field while Tonelli-Shanks stays in the base field. Both solve the same problem.",
+ demo:"none",sample:"",
+ refs:[["Cipolla, Un metodo per la risoluzione della congruenza di secondo grado, 1903","https://doi.org/10.1007/BF03013217"],["Cohen, Section 1.5.2 Cipolla","https://link.springer.com/book/10.1007/978-3-662-02945-9"],["Wikipedia, Cipolla's algorithm","https://en.wikipedia.org/wiki/Cipolla%27s_algorithm"]]},
+{id:"hensel",title:"Hensel lifting",level:4,kind:"Modular root",status:"Runnable teaching lab",
+ summary:"Hensel lifting takes a solution modulo p and lifts it to a solution modulo p^k. It is Newton's method for modular arithmetic.",
+ mental:"Improving an approximate answer one digit at a time",
+ mentalText:"You have a solution modulo p. You want one modulo p^2, then p^3, and so on. Each step uses the derivative to correct the error.",
+ steps:["Start with x_0 solving f(x) ≡ 0 (mod p).","Compute f'(x_0) mod p.","If f'(x_0) is not 0 mod p, compute x_1 = x_0 − f(x_0) / f'(x_0) mod p^2.","Repeat to lift to higher powers."],
+ pseudo:"Hensel lifting:\n  Given x_k with f(x_k) ≡ 0 (mod p^k)\n  Compute f'(x_k)\n  If gcd(f'(x_k), p) = 1:\n    x_{k+1} = x_k - f(x_k) × inv(f'(x_k), p) mod p^(k+1)\n  else: root may not lift uniquely\n\nThis is Newton's method in the p-adic numbers.",
+ uses:"Solving polynomial congruences, factoring polynomials, p-adic arithmetic.",
+ strength:"Doubles the precision at each step. Very efficient.",
+ limits:"Requires f'(x) not divisible by p. If it is, the root may not lift or may lift in multiple ways.",
+ pitfall:"The derivative condition is essential. If f'(x_0) ≡ 0 (mod p), Hensel lifting fails or needs a modified approach.",
+ question:"If x_0 = 3 solves x^2 ≡ 2 (mod 7), what is the lift to mod 49?",
+ answer:"x_1 = 3 − (9−2)/(2×3) mod 49 = 3 − 7/6 mod 49. Since 6^(−1) mod 49 = 41, x_1 = 3 − 7×41 = 3 − 287 ≡ 10 (mod 49). Check: 10^2 = 100 ≡ 2 (mod 49).",
+ demo:"hensel",sample:"2 7",
+ refs:[["Hensel, Theorie der algebraischen Zahlen, 1908","https://archive.org/details/theoriederalgeb00hensgoog"],["Cohen, Section 3.5 Hensel lifting","https://link.springer.com/book/10.1007/978-3-662-02945-9"],["Wikipedia, Hensel's lemma","https://en.wikipedia.org/wiki/Hensel%27s_lemma"]]},
+/* Chapter 8 */
+{id:"karatsuba",title:"Karatsuba multiplication",level:3,kind:"Fast arithmetic",status:"Runnable teaching lab",
+ summary:"Karatsuba reduces the number of single-digit multiplications from 4 to 3 when multiplying two 2-digit numbers recursively, giving O(n^1.585) instead of O(n^2).",
+ mental:"Trading multiplications for additions",
+ mentalText:"Multiplying two large numbers is expensive. Karatsuba does three half-size multiplications instead of four, at the cost of more additions.",
+ steps:["Split each number into high and low halves.","Compute three products: high×high, low×low, (high+low)×(high+low).","Combine: result = high×high × base^2n + ((high+low)² − high×high − low×low) × base^n + low×low.","Recurse on the half-size multiplications."],
+ pseudo:"Karatsuba(x, y):\n  if x < 10 or y < 10: return x * y\n  n = max(len(x), len(y))\n  half = n // 2\n  a, b = divmod(x, 10^half)\n  c, d = divmod(y, 10^half)\n  ac = Karatsuba(a, c)\n  bd = Karatsuba(b, d)\n  ad_plus_bc = Karatsuba(a + b, c + d) - ac - bd\n  return ac * 10^(2*half) + ad_plus_bc * 10^half + bd\n\nTime: O(n^1.585)",
+ uses:"Big integer libraries, cryptography, computer algebra systems.",
+ strength:"Faster than the naive algorithm for large numbers. Simple to implement.",
+ limits:"The overhead is significant for small numbers. Most libraries switch to naive multiplication below a threshold.",
+ pitfall:"The threshold matters. For small numbers, the naive algorithm is faster.",
+ question:"Why does Karatsuba do three multiplications instead of four?",
+ answer:"The middle product (a+b)(c+d) combines the two cross terms ad + bc into one multiplication, at the cost of extra additions.",
+ demo:"karatsuba",sample:"1234 5678",
+ refs:[["Karatsuba and Ofman, Multiplication of many-digital numbers by automatic computers, 1962","https://doi.org/10.1007/978-3-642-87190-4_10"],["Knuth, TAOCP Vol. 2, Section 4.3.3","https://www-cs-faculty.stanford.edu/~knuth/taocp.html"],["Crandall and Pomerance, Section 9.5","https://www.math.dartmouth.edu/~carlp/"]]},
+{id:"toom-schonhage",title:"Toom-Cook and Schönhage-Strassen",level:5,kind:"Fast arithmetic",status:"Concept lesson",
+ summary:"Toom-Cook generalizes Karatsuba to split numbers into k parts. Schönhage-Strassen uses the FFT to achieve O(n log n log log n) complexity.",
+ mental:"Splitting into more parts and using the Fourier transform",
+ mentalText:"Karatsuba splits into two parts. Toom-Cook splits into three or more. Schönhage-Strassen uses the FFT to multiply polynomials that encode the numbers.",
+ steps:["Toom-Cook: split each number into k parts.","Evaluate both polynomials at 2k−1 points.","Multiply pointwise.","Interpolate to get the product coefficients.","Schönhage-Strassen: use the FFT for the polynomial multiplication."],
+ pseudo:"Toom-Cook-3:\n  Split x = a_2 B^2 + a_1 B + a_0\n  Split y = b_2 B^2 + b_1 B + b_0\n  Evaluate at 0, 1, -1, 2, infinity\n  Multiply 5 pairs pointwise\n  Interpolate to get coefficients of product\n\nSchönhage-Strassen:\n  Encode numbers as polynomials\n  Multiply polynomials using the FFT\n  Handle carries\n  Time: O(n log n log log n)",
+ uses:"Big integer libraries (GMP), computer algebra systems, cryptography.",
+ strength:"Schönhage-Strassen is asymptotically faster than Karatsuba and Toom-Cook.",
+ limits:"The constant factors are large. Schönhage-Strassen is only faster for very large numbers.",
+ pitfall:"Toom-Cook needs exact interpolation. Division by small integers can cause problems in integer arithmetic.",
+ question:"What is the asymptotic complexity of Schönhage-Strassen?",
+ answer:"O(n log n log log n).",
+ demo:"none",sample:"",
+ refs:[["Toom, The complexity of a scheme of functional elements realizing the multiplication of integers, 1963","https://doi.org/10.1070/RM1963v018n03ABEH001134"],["Schönhage and Strassen, Schnelle Multiplikation grosser Zahlen, Computing 1971","https://doi.org/10.1007/BF02242355"],["Crandall and Pomerance, Section 9.5.5","https://www.math.dartmouth.edu/~carlp/"]]},
+{id:"ntt",title:"Number theoretic transform (NTT)",level:5,kind:"Fast arithmetic",status:"Concept lesson",
+ summary:"The NTT is the FFT over a finite field. It is used for fast polynomial multiplication modulo a prime, without floating point precision issues.",
+ mental:"The FFT without floating point error",
+ mentalText:"The FFT uses complex numbers. The NTT uses a finite field where a primitive root of unity exists. The result is exact.",
+ steps:["Choose a prime p with p−1 divisible by a power of 2.","Find a primitive n-th root of unity ω.","Apply the NTT to both polynomials.","Multiply pointwise.","Apply the inverse NTT."],
+ pseudo:"NTT:\n  Choose p = c 2^k + 1 with ω a primitive n-th root of unity\n  NTT(a) = sum a_j ω^(ij) mod p\n  Inverse NTT uses ω^(-1) and divides by n\n\nCommon primes:\n  998244353 = 119 × 2^23 + 1\n  1004535809 = 479 × 2^21 + 1",
+ uses:"Polynomial multiplication, big integer multiplication, cryptography (lattice-based), competitive programming.",
+ strength:"Exact arithmetic. No floating point error.",
+ limits:"Requires a prime with a suitable root of unity. Not all sizes are supported.",
+ pitfall:"The modulus must have enough factors of 2. If the polynomial is longer than the supported power of 2, you need a different prime or the CRT.",
+ question:"What is the advantage of NTT over FFT for polynomial multiplication?",
+ answer:"NTT uses exact modular arithmetic, so there is no floating point rounding error. This is critical for cryptography and exact computer algebra.",
+ demo:"none",sample:"",
+ refs:[["Crandall and Pomerance, Section 9.5.3 NTT","https://www.math.dartmouth.edu/~carlp/"],["Cohen, Section 2.4.2 NTT","https://link.springer.com/book/10.1007/978-3-662-02945-9"],["Wikipedia, Number theoretic transform","https://en.wikipedia.org/wiki/Number_theoretic_transform"]]},
+/* Chapter 9 */
+{id:"prime-counting",title:"Prime-counting functions",level:3,kind:"Counting",status:"Runnable teaching lab",
+ summary:"π(x) counts the number of primes up to x. ψ(x) and θ(x) are weighted versions. The prime number theorem says π(x) ∼ x / ln x.",
+ mental:"Counting how many primes there are below a limit",
+ mentalText:"There are more primes below 100 than below 10. The prime number theorem tells you roughly how many there are without listing them.",
+ steps:["Choose a value x.","Count primes up to x with a sieve.","For larger x, use the Meissel-Lehmer method.","Compare with the asymptotic x / ln x."],
+ pseudo:"π(x) = number of primes <= x\n\nPrime number theorem:\n  π(x) ~ x / ln(x)\n  More precisely: π(x) = li(x) + O(x e^(-c sqrt(ln x)))\n\nθ(x) = sum_{p <= x} ln p\nψ(x) = sum_{p^k <= x} ln p\nChebyshev functions",
+ uses:"Analytic number theory, cryptography (prime density estimates), algorithm analysis.",
+ strength:"Gives a quick estimate of prime density.",
+ limits:"The asymptotic is not accurate for small x. For exact values, you need a sieve or Meissel-Lehmer.",
+ pitfall:"π(x) is not the same as x / ln x. The approximation is only good for large x.",
+ question:"Approximately how many primes are there below 10^6?",
+ answer:"About 10^6 / ln(10^6) ≈ 72382. The actual value is 78498.",
+ demo:"prime-counting",sample:"1000",
+ refs:[["Crandall and Pomerance, Chapter 1 Prime number theorem","https://www.math.dartmouth.edu/~carlp/"],["Riesel, Prime Numbers and Computer Methods for Factorization, Birkhäuser 1994","https://link.springer.com/book/10.1007/978-1-4612-0251-6"],["Wikipedia, Prime-counting function","https://en.wikipedia.org/wiki/Prime-counting_function"]]},
+{id:"meissel-lehmer",title:"Meissel-Lehmer method",level:5,kind:"Counting",status:"Concept lesson",
+ summary:"The Meissel-Lehmer method computes π(x) in O(x^(2/3)/log x) time, much faster than sieving up to x.",
+ mental:"Counting without listing",
+ mentalText:"Instead of finding every prime, the method uses a recursive formula that counts them in bulk.",
+ steps:["Choose a value y around x^(1/3).","Sieve primes up to y.","Use the recursive formula φ(x, a) for the count.","Combine with the prime list to get π(x)."],
+ pseudo:"Meissel-Lehmer:\n  Let y = x^(1/3), a = π(y)\n  π(x) = φ(x, a) + a - 1\n\nwhere φ(x, a) counts integers <= x not divisible by the first a primes.\n\nRecursion:\n  φ(x, 0) = x\n  φ(x, a) = φ(x, a-1) - φ(x / p_a, a-1)\n\nOptimized: O(x^(2/3) / log x) time, O(x^(1/3)) space",
+ uses:"Computing π(x) for large x, number theory research, verifying prime counts.",
+ strength:"Much faster than sieving for large x.",
+ limits:"Still too slow for extremely large x. Analytic methods are used for record computations.",
+ pitfall:"The choice of y affects both time and space. y around x^(1/3) is usually optimal.",
+ question:"How much faster is Meissel-Lehmer than sieving for π(10^18)?",
+ answer:"Sieving 10^18 numbers is impossible. Meissel-Lehmer runs in O(10^12 / log 10^18) ≈ 10^10 operations, which is feasible on modern hardware.",
+ demo:"none",sample:"",
+ refs:[["Lagarias, Miller, Odlyzko, Computing π(x): the Meissel-Lehmer method, Math. Comp. 1985","https://doi.org/10.1090/S0025-5718-1985-0777281-1"],["Riesel, Prime Numbers and Computer Methods, Chapter 2","https://link.springer.com/book/10.1007/978-1-4612-0251-6"],["Wikipedia, Meissel-Lehmer algorithm","https://en.wikipedia.org/wiki/Meissel%E2%80%93Lehmer_algorithm"]]},
+{id:"arithmetic-functions",title:"Arithmetic functions and Möbius inversion",level:4,kind:"Number theory",status:"Runnable teaching lab",
+ summary:"Arithmetic functions map positive integers to numbers. Multiplicative functions factor over primes. Möbius inversion relates sums over divisors.",
+ mental:"Functions that depend on the prime factorization",
+ mentalText:"φ(n) counts numbers coprime to n. σ(n) sums the divisors. μ(n) is +1, −1 or 0 depending on the prime factorization.",
+ steps:["Define the function.","Check if it is multiplicative.","Compute it from the prime factorization.","Use Möbius inversion to relate f and its divisor sum."],
+ pseudo:"Common arithmetic functions:\n  φ(n): Euler totient, count of k <= n with gcd(k, n) = 1\n  σ(n): sum of divisors\n  τ(n): number of divisors\n  μ(n): Möbius function\n\nMöbius inversion:\n  If g(n) = sum_{d | n} f(d) then f(n) = sum_{d | n} μ(d) g(n/d)\n\nMultiplicative: f(mn) = f(m) f(n) when gcd(m, n) = 1",
+ uses:"Analytic number theory, cryptography, algorithms, combinatorics.",
+ strength:"Compact representation of divisor structure.",
+ limits:"Computing φ or σ for huge n requires factoring n.",
+ pitfall:"Multiplicative functions require coprime arguments. Using f(mn) = f(m)f(n) for non-coprime m and n is wrong.",
+ question:"What is φ(12)?",
+ answer:"4. The numbers 1, 5, 7 and 11 are coprime to 12.",
+ demo:"arith-func",sample:"12",
+ refs:[["Hardy and Wright, An Introduction to the Theory of Numbers, 6th ed., Oxford 2008","https://global.oup.com/academic/product/an-introduction-to-the-theory-of-numbers-9780199219865"],["Cohen, Section 1.6 Arithmetic functions","https://link.springer.com/book/10.1007/978-3-662-02945-9"],["Wikipedia, Multiplicative function","https://en.wikipedia.org/wiki/Multiplicative_function"]]},
+/* Chapter 10 */
+{id:"chudnovsky",title:"Chudnovsky algorithm for π",level:5,kind:"High precision",status:"Concept lesson",
+ summary:"The Chudnovsky algorithm computes π using a rapidly converging hypergeometric series. Each term gives about 14 decimal digits.",
+ mental:"A series that converges incredibly fast",
+ mentalText:"The Chudnovsky brothers found a series where each term adds 14 correct digits. To get a million digits, you need about 70,000 terms.",
+ steps:["Evaluate the series term by term.","Each term involves factorials and a linear numerator.","Use binary splitting to parallelize.","Combine the terms with high-precision arithmetic."],
+ pseudo:"1/π = 12 sum_{k=0}^∞ (-1)^k (6k)! (13591409 + 545140134k) / ((3k)! (k!)^3 (640320)^(3k+3/2))\n\nEach term adds about 14 decimal digits.\nBinary splitting:\n  Split the sum into halves\n  Compute each half recursively\n  Combine with high-precision multiplications",
+ uses:"Computing π to record precision, testing big integer libraries, cryptography benchmarks.",
+ strength:"The fastest known algorithm for computing π. Used in every record calculation since 1989.",
+ limits:"Requires high-precision arithmetic and careful implementation.",
+ pitfall:"The series needs the 640320^(3/2) factor. Getting the powers right is essential.",
+ question:"How many terms are needed for 1 million digits of π?",
+ answer:"About 1,000,000 / 14 ≈ 71,500 terms.",
+ demo:"none",sample:"",
+ refs:[["Chudnovsky and Chudnovsky, Approximations and complex multiplication according to Ramanujan, 1988","https://doi.org/10.1016/B978-0-12-058560-5.50026-0"],["Bailey, Borwein, Borwein, Plouffe, The quest for pi, Math. Intelligencer 1997","https://doi.org/10.1007/BF03024340"],["Wikipedia, Chudnovsky algorithm","https://en.wikipedia.org/wiki/Chudnovsky_algorithm"]]},
+{id:"gauss-legendre",title:"Gauss-Legendre algorithm for π",level:5,kind:"High precision",status:"Concept lesson",
+ summary:"The Gauss-Legendre algorithm computes π using the arithmetic-geometric mean. It doubles the number of correct digits at each iteration.",
+ mental:"Improving the approximation by averaging",
+ mentalText:"Each iteration replaces two numbers by their arithmetic mean and their geometric mean. The two means converge to the same value, and π comes out of the limit.",
+ steps:["Start with a_0 = 1, b_0 = 1/√2, t_0 = 1/4.","Iterate: a_{n+1} = (a_n + b_n)/2, b_{n+1} = √(a_n b_n).","Update t_{n+1} = t_n − 2^n (a_n − a_{n+1})².","Compute π ≈ (a_{n+1} + b_{n+1})² / (4 t_{n+1})."],
+ pseudo:"Gauss-Legendre:\n  a_0 = 1\n  b_0 = 1 / sqrt(2)\n  t_0 = 1/4\n  p_0 = 1\n  for n = 0, 1, 2, ...:\n    a_{n+1} = (a_n + b_n) / 2\n    b_{n+1} = sqrt(a_n * b_n)\n    t_{n+1} = t_n - p_n (a_n - a_{n+1})^2\n    p_{n+1} = 2 p_n\n    pi_n = (a_{n+1} + b_{n+1})^2 / (4 t_{n+1})\n\nEach iteration doubles the correct digits.",
+ uses:"Computing π to high precision, teaching quadratic convergence.",
+ strength:"Very fast convergence. Simple to implement.",
+ limits:"Each iteration needs high-precision square roots and multiplications.",
+ pitfall:"p_n must be updated correctly. Forgetting to double it breaks the algorithm.",
+ question:"After 3 iterations, how many correct digits does Gauss-Legendre give?",
+ answer:"About 2^3 = 8 digits after the first iteration, 16 after the second, 32 after the third. In practice it gives about 45 digits after 3 iterations.",
+ demo:"none",sample:"",
+ refs:[["Brent, Multiple-precision zero-finding methods and the complexity of elementary function evaluation, 1976","https://doi.org/10.1016/B978-0-12-328650-9.50019-X"],["Salamin, Computation of π using arithmetic-geometric mean, Math. Comp. 1976","https://doi.org/10.1090/S0025-5718-1976-0407869-7"],["Wikipedia, Gauss-Legendre algorithm","https://en.wikipedia.org/wiki/Gauss%E2%80%93Legendre_algorithm"]]},
+{id:"bbp-spigot",title:"BBP formula and spigot algorithms",level:5,kind:"High precision",status:"Concept lesson",
+ summary:"The BBP formula computes individual hexadecimal digits of π without computing the preceding digits. Spigot algorithms produce digits one at a time.",
+ mental:"Extracting a digit without finding the ones before it",
+ mentalText:"Normally you need all preceding digits to know digit k. The BBP formula lets you jump straight to digit k in hexadecimal.",
+ steps:["Use the BBP formula to compute the fractional part of the sum.","Multiply by 16^k.","Extract the digit.","Spigot algorithms use continued fractions to produce digits sequentially."],
+ pseudo:"BBP formula:\n  π = sum_{k=0}^∞ 1/16^k (4/(8k+1) - 2/(8k+4) - 1/(8k+5) - 1/(8k+6))\n\nTo compute the n-th hexadecimal digit:\n  Compute the fractional part of 16^n × sum_{k=0}^{n} ...\n  Add the tail contribution from k > n\n\nNo need to compute the first n-1 digits.",
+ uses:"Computing isolated digits of π, testing high-precision arithmetic, number theory research.",
+ strength:"Allows direct access to any digit. Novel and surprising result.",
+ limits:"Only works in base 16 (and base 2). No analogous formula is known for base 10.",
+ pitfall:"The BBP formula gives hexadecimal digits. Converting to decimal requires the preceding digits.",
+ question:"What is remarkable about the BBP formula?",
+ answer:"It computes any hexadecimal digit of π without computing the digits before it. This was a surprising discovery when published in 1995.",
+ demo:"none",sample:"",
+ refs:[["Bailey, Borwein, Plouffe, On the rapid computation of various polylogarithmic constants, Math. Comp. 1997","https://doi.org/10.1090/S0025-5718-97-00856-9"],["Bailey, The BBP algorithm for pi, 2006","https://www.osti.gov/biblio/886084"],["Wikipedia, Bailey-Borwein-Plouffe formula","https://en.wikipedia.org/wiki/Bailey%E2%80%93Borwein%E2%80%93Plouffe_formula"]]},
+{id:"pslq-lll",title:"PSLQ and LLL lattice reduction",level:5,kind:"Lattice algorithms",status:"Concept lesson",
+ summary:"PSLQ finds integer relations between real numbers. LLL reduces a lattice basis to find short vectors. Both use lattice reduction.",
+ mental:"Finding hidden integer relationships",
+ mentalText:"You have several real numbers. PSLQ looks for integers that combine them to zero. LLL finds short vectors in a lattice, which is useful for many problems.",
+ steps:["PSLQ: build a matrix from the numbers and search for an integer relation.","LLL: reduce the basis vectors to make them shorter and more orthogonal.","Use the reduced basis to find short vectors.","Apply to Diophantine approximation, polynomial factoring or cryptography."],
+ pseudo:"LLL algorithm:\n  Input: basis b_1, ..., b_n of a lattice\n  Output: a reduced basis with shorter, more orthogonal vectors\n\n  Repeat:\n    Gram-Schmidt orthogonalization\n    Size reduction: make coefficients small\n    Lovasz condition: swap if violated\n  Until the Lovasz condition holds for all pairs\n\nPSLQ:\n  Uses a lattice of dimension n+1\n  Finds an integer relation among n real numbers\n  Applications: experimental mathematics, finding formulas",
+ uses:"Finding integer relations (PSLQ), factoring polynomials (LLL), cryptography (lattice attacks), MIMO detection.",
+ strength:"Powerful tools for finding hidden structure.",
+ limits:"LLL is polynomial time but the approximation factor is exponential in the dimension. BKZ is stronger but slower.",
+ pitfall:"LLL does not find the shortest vector, only an approximation. For exact shortest vector, you need exponential algorithms.",
+ question:"What does the Lovász condition check in LLL?",
+ answer:"It checks whether the Gram-Schmidt vectors are sufficiently reduced. If not, the algorithm swaps the two basis vectors and repeats.",
+ demo:"none",sample:"",
+ refs:[["Lenstra, Lenstra, Lovász, Factoring polynomials with rational coefficients, Math. Ann. 1982","https://doi.org/10.1007/BF01457454"],["Ferguson and Bailey, A polynomial time, numerically stable integer relation algorithm, 1992","https://doi.org/10.2172/7009277"],["Nguyen and Vallée, The LLL Algorithm: Survey and Applications, Springer 2010","https://link.springer.com/book/10.1007/978-3-642-02295-1"]]}
+];
+
+const LESSONS=RAW.map(mk);
+const byId=Object.fromEntries(LESSONS.map(x=>[x.id,x]));
+
+/* ============================================================
+   Code examples
+   ============================================================ */
+const CODE={
+ "gcd":{python:`def gcd_euclidean(a, b):\n    while b:\n        a, b = b, a % b\n    return abs(a)\n\n\ndef gcd_subtractive(a, b):\n    while a != b:\n        if a > b:\n            a -= b\n        else:\n            b -= a\n    return a\n\n\nprint(gcd_euclidean(1071, 462))\nprint(gcd_subtractive(1071, 462))\n`},
+ "euclidean-ext":{python:`def extended_gcd(a, b):\n    old_r, r = a, b\n    old_s, s = 1, 0\n    old_t, t = 0, 1\n    while r != 0:\n        q = old_r // r\n        old_r, r = r, old_r - q * r\n        old_s, s = s, old_s - q * s\n        old_t, t = t, old_t - q * t\n    return old_r, old_s, old_t\n\n\ng, x, y = extended_gcd(1071, 462)\nprint(f"gcd = {g}")\nprint(f"{1071} * ({x}) + {462} * ({y}) = {g}")\nassert 1071 * x + 462 * y == g\n`},
+ "binary-gcd":{python:`def binary_gcd(u, v):\n    if u == 0: return v\n    if v == 0: return u\n    shift = 0\n    while ((u | v) & 1) == 0:\n        u >>= 1\n        v >>= 1\n        shift += 1\n    while (u & 1) == 0:\n        u >>= 1\n    while v != 0:\n        while (v & 1) == 0:\n            v >>= 1\n        if u > v:\n            u, v = v, u\n        v = v - u\n    return u << shift\n\n\nprint(binary_gcd(1071, 462))\n`},
+ "modexp":{python:`def modexp(a, b, m):\n    result = 1\n    a = a % m\n    while b > 0:\n        if b & 1:\n            result = (result * a) % m\n        a = (a * a) % m\n        b >>= 1\n    return result\n\n\nprint(modexp(2, 1000, 1000000007))\nprint(modexp(3, 100, 101))\n`},
+ "modinv":{python:`def extended_gcd(a, b):\n    old_r, r = a, b\n    old_s, s = 1, 0\n    old_t, t = 0, 1\n    while r != 0:\n        q = old_r // r\n        old_r, r = r, old_r - q * r\n        old_s, s = s, old_s - q * s\n        old_t, t = t, old_t - q * t\n    return old_r, old_s, old_t\n\n\ndef modinv(a, m):\n    g, x, _ = extended_gcd(a, m)\n    if g != 1:\n        raise ValueError(f"no inverse: gcd({a}, {m}) = {g}")\n    return x % m\n\n\nprint(modinv(7, 13))\nprint((7 * modinv(7, 13)) % 13)\n`},
+ "crt":{python:`def crt(residues, moduli):\n    M = 1\n    for m in moduli:\n        M *= m\n    x = 0\n    for a, m in zip(residues, moduli):\n        Mi = M // m\n        inv = pow(Mi, -1, m)\n        x += a * Mi * inv\n    return x % M\n\n\nprint(crt([2, 3, 2], [3, 5, 7]))\n`},
+ "euler-fermat":{python:`def euler_phi(n):\n    result = n\n    p = 2\n    while p * p <= n:\n        if n % p == 0:\n            while n % p == 0:\n                n //= p\n            result -= result // p\n        p += 1\n    if n > 1:\n        result -= result // n\n    return result\n\n\nprint("phi(100) =", euler_phi(100))\nprint("2^100 mod 101 =", pow(2, 100, 101))\nprint("Fermat check passes:", pow(2, 100, 101) == 1)\n`},
+ "sieve":{python:`def sieve(n):\n    is_prime = [True] * (n + 1)\n    is_prime[0] = is_prime[1] = False\n    p = 2\n    while p * p <= n:\n        if is_prime[p]:\n            for multiple in range(p * p, n + 1, p):\n                is_prime[multiple] = False\n        p += 1\n    return [i for i in range(n + 1) if is_prime[i]]\n\n\nprint(sieve(100))\nprint(f"Number of primes up to 100: {len(sieve(100))}")\n`},
+ "miller-rabin":{python:`def miller_rabin(n, bases=None):\n    if n < 2: return False\n    if n == 2 or n == 3: return True\n    if n % 2 == 0: return False\n    d = n - 1\n    s = 0\n    while d % 2 == 0:\n        d //= 2\n        s += 1\n    if bases is None:\n        bases = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37]\n    for a in bases:\n        if a >= n: continue\n        x = pow(a, d, n)\n        if x == 1 or x == n - 1: continue\n        for _ in range(s - 1):\n            x = (x * x) % n\n            if x == n - 1: break\n        else:\n            return False\n    return True\n\n\nprint(miller_rabin(104729))\nprint(miller_rabin(104730))\n`},
+ "pollard-rho":{python:`import math\nimport random\n\n\ndef pollard_rho(n):\n    if n % 2 == 0: return 2\n    if n % 3 == 0: return 3\n    while True:\n        c = random.randrange(1, n)\n        f = lambda x: (x * x + c) % n\n        x = y = 2\n        d = 1\n        while d == 1:\n            x = f(x)\n            y = f(f(y))\n            d = math.gcd(abs(x - y), n)\n        if d != n:\n            return d\n\n\nprint(pollard_rho(8051))\nprint(pollard_rho(10403))\n`},
+ "pollard-pm1":{python:`import math\n\n\ndef pollard_pm1(n, B=100):\n    a = 2\n    for q in range(2, B + 1):\n        if all(q % d != 0 for d in range(2, int(q**0.5) + 1)):\n            power = q\n            while power * q <= B:\n                power *= q\n            a = pow(a, power, n)\n            d = math.gcd(a - 1, n)\n            if 1 < d < n:\n                return d\n    return None\n\n\nprint(pollard_pm1(8051, 50))\n`},
+ "bsgs":{python:`def bsgs(g, h, p):\n    m = int(p ** 0.5) + 1\n    table = {}\n    e = 1\n    for j in range(m):\n        table[e] = j\n        e = (e * g) % p\n    factor = pow(g, -m, p)\n    e = h\n    for i in range(m):\n        if e in table:\n            return i * m + table[e]\n        e = (e * factor) % p\n    return None\n\n\nx = bsgs(2, 5, 23)\nprint(f"2^{x} mod 23 = {pow(2, x, 23)}")\nassert pow(2, x, 23) == 5\n`},
+ "pohlig-hellman":{python:`def bsgs(g, h, p):\n    m = int(p ** 0.5) + 1\n    table = {}\n    e = 1\n    for j in range(m):\n        table[e] = j\n        e = (e * g) % p\n    factor = pow(g, -m, p)\n    e = h\n    for i in range(m):\n        if e in table:\n            return i * m + table[e]\n        e = (e * factor) % p\n    return None\n\n\ndef pohlig_hellman(g, h, p):\n    n = p - 1\n    factors = []\n    d = 2\n    while d * d <= n:\n        if n % d == 0:\n            e = 0\n            while n % d == 0:\n                n //= d\n                e += 1\n            factors.append((d, e))\n        d += 1\n    if n > 1:\n        factors.append((n, 1))\n    residues = []\n    moduli = []\n    for q, e in factors:\n        qe = q ** e\n        gi = pow(g, (p - 1) // qe, p)\n        hi = pow(h, (p - 1) // qe, p)\n        xi = bsgs(gi, hi, p)\n        residues.append(xi)\n        moduli.append(qe)\n    from functools import reduce\n    M = reduce(lambda a, b: a * b, moduli)\n    x = 0\n    for a, m in zip(residues, moduli):\n        Mi = M // m\n        inv = pow(Mi, -1, m)\n        x += a * Mi * inv\n    return x % M\n\n\nx = pohlig_hellman(2, 5, 23)\nprint(f"2^{x} mod 23 = {pow(2, x, 23)}")\n`},
+ "tonelli":{python:`def tonelli_shanks(n, p):\n    if pow(n, (p - 1) // 2, p) != 1:\n        return None\n    q = p - 1\n    s = 0\n    while q % 2 == 0:\n        q //= 2\n        s += 1\n    if s == 1:\n        return pow(n, (p + 1) // 4, p)\n    z = 2\n    while pow(z, (p - 1) // 2, p) != p - 1:\n        z += 1\n    m = s\n    c = pow(z, q, p)\n    t = pow(n, q, p)\n    r = pow(n, (q + 1) // 2, p)\n    while t != 1:\n        i = 0\n        temp = t\n        while temp != 1:\n            temp = (temp * temp) % p\n            i += 1\n        b = pow(c, 1 << (m - i - 1), p)\n        m = i\n        c = (b * b) % p\n        t = (t * c) % p\n        r = (r * b) % p\n    return r\n\n\nroot = tonelli_shanks(2, 7)\nprint(f"sqrt(2) mod 7 = {root}")\nassert (root * root) % 7 == 2\n`},
+ "hensel":{python:`def hensel_lift(f, df, x, p, k):\n    """Lift a root of f mod p to a root mod p^k."""\n    modulus = p\n    for _ in range(k - 1):\n        fx = f(x) % (modulus * p)\n        dfx = df(x) % p\n        if dfx == 0:\n            raise ValueError("derivative is zero mod p")\n        inv = pow(dfx, -1, p)\n        x = (x - fx * inv) % (modulus * p)\n        modulus *= p\n    return x % (p ** k)\n\n\n# f(x) = x^2 - 2, df(x) = 2x\nf = lambda x: x * x - 2\ndf = lambda x: 2 * x\nroot = hensel_lift(f, df, 3, 7, 3)\nprint(f"sqrt(2) mod 343 = {root}")\nassert (root * root - 2) % 343 == 0\n`},
+ "karatsuba":{python:`def karatsuba(x, y):\n    if x < 10 or y < 10:\n        return x * y\n    n = max(len(str(x)), len(str(y)))\n    half = n // 2\n    a, b = divmod(x, 10 ** half)\n    c, d = divmod(y, 10 ** half)\n    ac = karatsuba(a, c)\n    bd = karatsuba(b, d)\n    ad_bc = karatsuba(a + b, c + d) - ac - bd\n    return ac * 10 ** (2 * half) + ad_bc * 10 ** half + bd\n\n\nprint(karatsuba(1234, 5678))\nprint(1234 * 5678)\nassert karatsuba(1234, 5678) == 1234 * 5678\n`},
+ "prime-counting":{python:`def sieve(n):\n    is_prime = [True] * (n + 1)\n    is_prime[0] = is_prime[1] = False\n    p = 2\n    while p * p <= n:\n        if is_prime[p]:\n            for multiple in range(p * p, n + 1, p):\n                is_prime[multiple] = False\n        p += 1\n    return [i for i in range(n + 1) if is_prime[i]]\n\n\nimport math\nfor x in (10, 100, 1000, 10000):\n    actual = len(sieve(x))\n    approx = x / math.log(x)\n    print(f"pi({x:>5}) = {actual:>6}  approx x/ln x = {approx:>10.1f}")\n`},
+ "arith-func":{python:`def factorize(n):\n    factors = {}\n    d = 2\n    while d * d <= n:\n        while n % d == 0:\n            factors[d] = factors.get(d, 0) + 1\n            n //= d\n        d += 1\n    if n > 1:\n        factors[n] = 1\n    return factors\n\n\ndef euler_phi(n):\n    result = n\n    for p in factorize(n):\n        result -= result // p\n    return result\n\n\ndef sigma(n):\n    result = 1\n    for p, e in factorize(n).items():\n        result *= (p ** (e + 1) - 1) // (p - 1)\n    return result\n\n\ndef tau(n):\n    result = 1\n    for e in factorize(n).values():\n        result *= e + 1\n    return result\n\n\nn = 12\nprint(f"phi({n}) = {euler_phi(n)}")\nprint(f"sigma({n}) = {sigma(n)}")\nprint(f"tau({n}) = {tau(n)}")\n`},
+};
+
+/* ============================================================
+   Utilities
+   ============================================================ */
+function parseNums(s){
+ const a=s.trim().split(/[\s,]+/).filter(Boolean).map(Number);
+ if(!a.length||a.some(x=>!Number.isFinite(x)))throw Error('Enter space or comma separated numbers.');
+ return a;
+}
+function bigIntToStr(n){return n.toString()}
+function bn(n){return BigInt(n)}
+
+/* ============================================================
+   Labs
+   ============================================================ */
+function demoGcd(text){
+ const [a,b]=parseNums(text).map(n=>BigInt(Math.abs(n)));
+ if(a===undefined||b===undefined)throw Error('Enter two integers, for example: 1071 462');
+ function gcdEuclid(x,y){while(y!==0n){[x,y]=[y,x%y]}return x<0n?-x:x}
+ function gcdSubtract(x,y){x=x<0n?-x:x;y=y<0n?-y:y;while(x!==y){if(x>y)x-=y;else y-=x}return x}
+ return {
+  encoded:`a = ${a}\nb = ${b}\n\ngcd via Euclidean: ${gcdEuclid(a,b)}\ngcd via subtractive: ${gcdSubtract(a,b)}`,
+  decoded:`The Euclidean algorithm repeatedly replaces (a, b) with (b, a mod b) until b = 0. The last nonzero remainder is the GCD.\n\nThe subtractive version replaces the larger by the difference. It is correct but slow when the numbers have very different magnitudes.\n\nGCD is used in fraction simplification, modular arithmetic and many number theory algorithms.`,
+  steps:2,units:2,tokens:2
+ };
+}
+function demoEuclideanExt(text){
+ const [a,b]=parseNums(text).map(n=>BigInt(n));
+ if(a===undefined||b===undefined)throw Error('Enter two integers, for example: 1071 462');
+ let oldR=a,r=b,oldS=1n,s=0n,oldT=0n,t=1n;
+ const steps=[];
+ while(r!==0n){
+  const q=oldR/r;
+  steps.push({q,a:oldR,b:r,r});
+  [oldR,r]=[r,oldR-q*r];
+  [oldS,s]=[s,oldS-q*s];
+  [oldT,t]=[t,oldT-q*t];
+ }
+ const gcd=oldR;
+ return {
+  encoded:`a = ${a}, b = ${b}\n\nEuclidean steps:\n${steps.map((x,i)=>`  ${x.a} = ${x.b} × ${x.q} + ${x.r}`).join('\n')}\n\ngcd(${a}, ${b}) = ${gcd}\n\nBézout coefficients:\n  ${oldS} × ${a} + ${oldT} × ${b} = ${gcd}\n  check: ${oldS*a+oldT*b}`,
+  decoded:`The extended Euclidean algorithm tracks the Bézout coefficients alongside the Euclidean divisions. At the end, oldS and oldT satisfy oldS*a + oldT*b = gcd(a, b).\n\nThis is the basis for computing modular inverses. The inverse of a modulo m is the Bézout coefficient s when gcd(a, m) = 1.`,
+  steps:steps.length,units:steps.length,tokens:3
+ };
+}
+function demoBinaryGcd(text){
+ const [a,b]=parseNums(text).map(n=>BigInt(n));
+ let u=a<0n?-a:a,v=b<0n?-b:b;
+ if(u===0n||v===0n)throw Error('Neither number can be zero');
+ let shift=0;
+ while(((u|v)&1n)===0n){u>>=1n;v>>=1n;shift++}
+ while((u&1n)===0n)u>>=1n;
+ while(v!==0n){
+  while((v&1n)===0n)v>>=1n;
+  if(u>v)[u,v]=[v,u];
+  v=v-u;
+ }
+ const gcd=u<<BigInt(shift);
+ return {
+  encoded:`a = ${a}, b = ${b}\n\nBinary GCD result: ${gcd}\nCheck with Euclidean: ${(()=>{let x=a<0n?-a:a,y=b<0n?-b:b;while(y){[x,y]=[y,x%y]}return x})()}`,
+  decoded:`Binary GCD removes common factors of 2 first, then uses only subtraction and halving. It avoids the modulo operation, which can be slow on some hardware.\n\nThe shift count records how many factors of 2 were removed at the start. They are restored at the end by shifting left.`,
+  steps:2,units:2,tokens:2
+ };
+}
+function demoModexp(text){
+ const [a,b,m]=parseNums(text).map(n=>BigInt(n));
+ if(m===undefined||m<=0n)throw Error('Enter three integers: base exponent modulus');
+ function modexp(base,exp,mod){
+  let result=1n;base=((base%mod)+mod)%mod;let e=exp;
+  while(e>0n){if(e&1n)result=(result*base)%mod;base=(base*base)%mod;e>>=1n}
+  return result;
+ }
+ const result=modexp(a,b,m);
+ const bits=b.toString(2).length;
+ return {
+  encoded:`${a}^${b} mod ${m} = ${result}\n\nExponent bits: ${bits}\nMultiplications needed: about ${2*bits}`,
+  decoded:`Modular exponentiation uses the binary expansion of the exponent. It squares at each step and multiplies by the base when the current bit is 1.\n\nThis reduces the number of multiplications from b to about 2 log2(b). For a 1000-bit exponent, that is roughly 2000 multiplications instead of 10^300.`,
+  steps:bits,units:2*bits,tokens:1
+ };
+}
+function demoModinv(text){
+ const [a,m]=parseNums(text).map(n=>BigInt(n));
+ if(a===undefined||m===undefined)throw Error('Enter two integers: a and modulus m');
+ function extgcd(x,y){
+  let oldR=x,r=y,oldS=1n,s=0n;
+  while(r!==0n){const q=oldR/r;[oldR,r]=[r,oldR-q*r];[oldS,s]=[s,oldS-q*s]}
+  return[oldR,oldS];
+ }
+ const[g,inv]=extgcd(a,m);
+ if(g!==1n)return{encoded:`gcd(${a}, ${m}) = ${g}\nNo inverse exists.`,decoded:'The modular inverse exists only when gcd(a, m) = 1.',steps:1,units:0,tokens:0};
+ const x=((inv%m)+m)%m;
+ return {
+  encoded:`a = ${a}, m = ${m}\ngcd = ${g}\n\nInverse of ${a} modulo ${m} = ${x}\nCheck: ${a} × ${x} mod ${m} = ${(a*x)%m}`,
+  decoded:`The modular inverse of a is the number x such that a × x ≡ 1 (mod m). It exists only when gcd(a, m) = 1.\n\nThe extended Euclidean algorithm gives the inverse as the Bézout coefficient of a.`,
+  steps:2,units:2,tokens:2
+ };
+}
+function demoCrt(text){
+ const lines=text.trim().split(/\n/).filter(Boolean);
+ const residues=[],moduli=[];
+ for(const line of lines){
+  const parts=line.split(/[\s,]+/).filter(Boolean).map(Number);
+  if(parts.length===2){residues.push(parts[0]);moduli.push(parts[1])}
+ }
+ if(residues.length<2)throw Error('Enter one congruence per line: a m (meaning x ≡ a mod m)');
+ let M=1;for(const m of moduli)M*=m;
+ let x=0;
+ const steps=[];
+ for(let i=0;i<residues.length;i++){
+  const Mi=M/moduli[i];
+  const inv=modInv(Mi,moduli[i]);
+  const term=residues[i]*Mi*inv;
+  x+=term;
+  steps.push(`  a=${residues[i]}, m=${moduli[i]}: M_i=${Mi}, inv=${inv}, term=${term}`);
+ }
+ x=((x%M)+M)%M;
+ const checks=residues.map((a,i)=>`${x} mod ${moduli[i]} = ${x%moduli[i]} (expected ${a})`);
+ return {
+  encoded:`Congruences:\n${residues.map((a,i)=>`  x ≡ ${a} (mod ${moduli[i]})`).join('\n')}\n\nM = ${M}\n\n${steps.join('\n')}\n\nSolution: x = ${x}\n\n${checks.join('\n')}`,
+  decoded:`The Chinese remainder theorem combines congruences with pairwise coprime moduli into a single congruence modulo the product.\n\nEach term uses the product of the other moduli and its inverse. The sum is then reduced modulo M.\n\nIf the moduli are not pairwise coprime and the residues are not compatible, no solution exists.`,
+  steps:residues.length,units:residues.length,tokens:residues.length
+ };
+}
+function modInv(a,m){
+ a=((a%m)+m)%m;
+ let[oldR,r]=[a,m];let[oldS,s]=[1,0];
+ while(r!==0){const q=Math.floor(oldR/r);[oldR,r]=[r,oldR-q*r];[oldS,s]=[s,oldS-q*s]}
+ if(oldR!==1)throw Error('no inverse');
+ return((oldS%m)+m)%m;
+}
+function demoEulerFermat(text){
+ const [a,p]=parseNums(text).map(n=>BigInt(n));
+ if(a===undefined||p===undefined)throw Error('Enter base and prime: a p');
+ function modpow(b,e,m){let r=1n;b=((b%m)+m)%m;while(e>0n){if(e&1n)r=(r*b)%m;b=(b*b)%m;e>>=1n}return r}
+ const result=modpow(a,p-1n,p);
+ return {
+  encoded:`a = ${a}, p = ${p}\n\na^(p-1) mod p = ${result}\n\nFermat: if p is prime and gcd(a,p)=1 then a^(p-1) ≡ 1 (mod p)\nCheck: ${result===1n?'PASS':'FAIL'}`,
+  decoded:`Fermat's little theorem says that for a prime p and a not divisible by p, a^(p−1) ≡ 1 (mod p).\n\nEuler generalized this: a^φ(m) ≡ 1 (mod m) when gcd(a, m) = 1. For prime m, φ(m) = m − 1.\n\nThe converse is false. Carmichael numbers satisfy a^(n−1) ≡ 1 for all a coprime to n but are composite.`,
+  steps:2,units:2,tokens:1
+ };
+}
+function demoSieve(text){
+ const n=Math.min(parseInt(text.trim())||100,5000);
+ const isPrime=new Uint8Array(n+1).fill(1);
+ isPrime[0]=isPrime[1]=0;
+ for(let p=2;p*p<=n;p++)if(isPrime[p])for(let m=p*p;m<=n;m+=p)isPrime[m]=0;
+ const primes=[];
+ for(let i=2;i<=n;i++)if(isPrime[i])primes.push(i);
+ return {
+  encoded:`Primes up to ${n}:\n${primes.join(', ')}\n\nCount: ${primes.length}`,
+  decoded:`The Sieve of Eratosthenes marks multiples of each prime starting from p². It runs in O(n log log n) time and O(n) space.\n\nFor n = ${n}, the number of primes is ${primes.length}. The prime number theorem predicts about ${n}/ln(${n}) ≈ ${(n/Math.log(n)).toFixed(0)}.`,
+  steps:n,units:primes.length,tokens:primes.length
+ };
+}
+function demoMillerRabin(text){
+ let n=BigInt(text.trim());
+ if(n<2n)throw Error('Enter an integer ≥ 2');
+ function modpow(b,e,m){let r=1n;b=((b%m)+m)%m;while(e>0n){if(e&1n)r=(r*b)%m;b=(b*b)%m;e>>=1n}return r}
+ function isPrime(n){
+  if(n<2n)return false;
+  for(const p of [2n,3n,5n,7n,11n,13n,17n,19n,23n,29n,31n,37n]){
+   if(n===p)return true;
+   if(n%p===0n)return false;
+  }
+  let d=n-1n,s=0n;
+  while(d%2n===0n){d/=2n;s++}
+  for(const a of [2n,3n,5n,7n,11n,13n,17n,19n,23n,29n,31n,37n]){
+   let x=modpow(a,d,n);
+   if(x===1n||x===n-1n)continue;
+   let composite=true;
+   for(let r=1n;r<s;r++){
+    x=(x*x)%n;
+    if(x===n-1n){composite=false;break}
+   }
+   if(composite)return false;
+  }
+  return true;
+ }
+ const result=isPrime(n);
+ const bits=n.toString(2).length;
+ return {
+  encoded:`n = ${n}\n\nMiller-Rabin result: ${result?'PROBABLY PRIME':'COMPOSITE'}\n\nBit length: ${bits}\nBases tested: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37`,
+  decoded:`Miller-Rabin writes n−1 = 2^s × d with d odd, then tests bases a. For each base, it checks whether a^d ≡ 1 or a^(2^r × d) ≡ −1 for some r < s.\n\nWith the first 12 primes as bases, the test is deterministic for n < 3.3 × 10^24. For larger n it is probabilistic with error at most 4^(−k) for k random bases.`,
+  steps:bits,units:12,tokens:1
+ };
+}
+function demoPollardRho(text){
+ const n=BigInt(text.trim());
+ if(n<4n)throw Error('Enter a composite integer ≥ 4');
+ function gcd(a,b){while(b){[a,b]=[b,a%b]}return a<0n?-a:a}
+ function f(x,c,m){return(x*x+c)%m}
+ let factor=null;
+ for(let c=1n;c<20n&&factor===null;c++){
+  let x=2n,y=2n,d=1n;
+  let iters=0;
+  while(d===1n&&iters<10000){
+   x=f(x,c,n);y=f(f(y,c,n),c,n);
+   d=gcd(x>y?x-y:y-x,n);
+   iters++;
+  }
+  if(d>1n&&d<n)factor=d;
+ }
+ if(factor===null)return{encoded:`No factor found in the demo range.`,decoded:'Try a different input or a larger iteration limit.',steps:0,units:0,tokens:0};
+ return {
+  encoded:`n = ${n}\n\nFound factor: ${factor}\nOther factor: ${n/factor}\nCheck: ${factor} × ${n/factor} = ${factor*(n/factor)}`,
+  decoded:`Pollard rho uses a pseudo-random walk modulo n. When the walk collides modulo a factor p, the GCD of the difference with n reveals p.\n\nThe expected number of iterations is about √p, where p is the smallest factor. This is why it is fast for numbers with small factors and slow for strong semiprimes.`,
+  steps:1,units:1,tokens:2
+ };
+}
+function demoPollardPm1(text){
+ const n=BigInt(text.trim());
+ if(n<4n)throw Error('Enter a composite integer ≥ 4');
+ function gcd(a,b){while(b){[a,b]=[b,a%b]}return a<0n?-a:a}
+ function modpow(b,e,m){let r=1n;b=((b%m)+m)%m;while(e>0n){if(e&1n)r=(r*b)%m;b=(b*b)%m;e>>=1n}return r}
+ function isPrime(n){if(n<2n)return false;for(let d=2n;d*d<=n;d++)if(n%d===0n)return false;return true}
+ let a=2n;let factor=null;const B=100n;
+ for(let q=2n;q<=B&&factor===null;q++){
+  if(!isPrime(q))continue;
+  let power=q;
+  while(power*q<=B)power*=q;
+  a=modpow(a,power,n);
+  const d=gcd(a-1n,n);
+  if(d>1n&&d<n)factor=d;
+ }
+ if(factor===null)return{encoded:'No factor found with B = 100.',decoded:'Try a different input or a larger bound.',steps:0,units:0,tokens:0};
+ return {
+  encoded:`n = ${n}\n\nFound factor: ${factor}\nOther factor: ${n/factor}\nCheck: ${factor} × ${n/factor} = ${factor*(n/factor)}`,
+  decoded:`Pollard p−1 succeeds when the smallest factor p has p−1 smooth. The algorithm computes a^M mod n where M is the product of prime powers up to B, then takes gcd(a−1, n).\n\nIf p−1 is B-smooth, then a^M ≡ 1 mod p and gcd(a−1, n) reveals p.`,
+  steps:1,units:1,tokens:2
+ };
+}
+function demoBsgs(text){
+ const [g,h,p]=parseNums(text).map(n=>BigInt(n));
+ if(g===undefined||h===undefined||p===undefined)throw Error('Enter g, h, p');
+ function modpow(b,e,m){let r=1n;b=((b%m)+m)%m;while(e>0n){if(e&1n)r=(r*b)%m;b=(b*b)%m;e>>=1n}return r}
+ const m=BigInt(Math.ceil(Math.sqrt(Number(p))));
+ const table=new Map();
+ let e=1n;
+ for(let j=0n;j<m;j++){table.set(e.toString(),j);e=(e*g)%p}
+ let factor=modpow(g,p-2n,p);
+ let x=null;e=h;
+ for(let i=0n;i<m;i++){
+  if(table.has(e.toString())){x=i*m+table.get(e.toString());break}
+  e=(e*factor)%p;
+ }
+ if(x===null)return{encoded:'No discrete log found.',decoded:'Check that h is in the group generated by g.',steps:Number(m),units:Number(m),tokens:0};
+ return {
+  encoded:`g = ${g}, h = ${h}, p = ${p}\n\nBaby-step giant-step found: x = ${x}\nCheck: ${g}^${x} mod ${p} = ${modpow(g,x,p)}`,
+  decoded:`BSGS splits the search into m = ceil(√(p−1)) baby steps and m giant steps. It uses a hash table to match the two halves.\n\nTime and space are both O(√p). For small p this is fast; for large p the memory requirement becomes prohibitive.`,
+  steps:Number(m),units:Number(m),tokens:1
+ };
+}
+function demoPohligHellman(text){
+ const [g,h,p]=parseNums(text).map(n=>BigInt(n));
+ if(g===undefined||h===undefined||p===undefined)throw Error('Enter g, h, p');
+ function modpow(b,e,m){let r=1n;b=((b%m)+m)%m;while(e>0n){if(e&1n)r=(r*b)%m;b=(b*b)%m;e>>=1n}return r}
+ function gcd(a,b){while(b){[a,b]=[b,a%b]}return a<0n?-a:a}
+ function bsgs(g,h,p,order){
+  const m=BigInt(Math.ceil(Math.sqrt(Number(order))));
+  const table=new Map();let e=1n;
+  for(let j=0n;j<m;j++){table.set(e.toString(),j);e=(e*g)%p}
+  const factor=modpow(g,order-1n,p);let x=null;e=h;
+  for(let i=0n;i<m;i++){if(table.has(e.toString())){x=i*m+table.get(e.toString());break}e=(e*factor)%p}
+  return x;
+ }
+ const n=p-1n;
+ const factors=[];
+ let nn=n,d=2n;
+ while(d*d<=nn){if(nn%d===0n){let e=0n;while(nn%d===0n){nn/=d;e++}factors.push([d,Number(e)])}d++}
+ if(nn>1n)factors.push([nn,1]);
+ const residues=[];const moduli=[];
+ for(const[q,e]of factors){
+  const qe=q**BigInt(e);
+  const gi=modpow(g,Number(n)/Number(qe),p);
+  const hi=modpow(h,Number(n)/Number(qe),p);
+  const xi=bsgs(gi,hi,p,qe);
+  residues.push(xi);moduli.push(qe);
+ }
+ const M=moduli.reduce((a,b)=>a*b,1n);
+ let x=0n;
+ for(let i=0;i<residues.length;i++){
+  const Mi=M/moduli[i];
+  const inv=modInv(Number(Mi),Number(moduli[i]));
+  x+=BigInt(residues[i])*Mi*BigInt(inv);
+ }
+ x=((x%M)+M)%M;
+ return {
+  encoded:`g = ${g}, h = ${h}, p = ${p}\n\nN = p−1 = ${n}\nFactorization: ${factors.map(([q,e])=>`${q}^${e}`).join(' × ')}\n\nResidues: ${residues.join(', ')}\nModuli: ${moduli.join(', ')}\n\nx = ${x}\nCheck: ${g}^${x} mod ${p} = ${modpow(g,x,p)}`,
+  decoded:`Pohlig-Hellman reduces the discrete log modulo N to discrete logs in subgroups of prime power order. Each subgroup log is solved with BSGS and the results are combined with CRT.\n\nThe complexity is O(Σ √q_i) plus the cost of factoring N. If N is smooth, this is much faster than solving the full discrete log directly.`,
+  steps:factors.length,units:factors.length,tokens:residues.length
+ };
+}
+function demoTonelli(text){
+ const [n,p]=parseNums(text).map(n=>BigInt(n));
+ if(n===undefined||p===undefined)throw Error('Enter n and prime p');
+ function modpow(b,e,m){let r=1n;b=((b%m)+m)%m;while(e>0n){if(e&1n)r=(r*b)%m;b=(b*b)%m;e>>=1n}return r}
+ if(modpow(n,(p-1n)/2n,p)!==1n)return{encoded:`${n} is not a quadratic residue modulo ${p}.`,decoded:'Euler criterion fails. No square root exists.',steps:0,units:0,tokens:0};
+ let q=p-1n,s=0n;
+ while(q%2n===0n){q/=2n;s++}
+ let root;
+ if(s===1n)root=modpow(n,(p+1n)/4n,p);
+ else{
+  let z=2n;
+  while(modpow(z,(p-1n)/2n,p)!==p-1n)z++;
+  let m=s,c=modpow(z,q,p),t=modpow(n,q,p),r=modpow(n,(q+1n)/2n,p);
+  while(t!==1n){
+   let i=0n,temp=t;
+   while(temp!==1n){temp=(temp*temp)%p;i++}
+   const b=modpow(c,1n<<(m-i-1n),p);
+   m=i;c=(b*b)%p;t=(t*c)%p;r=(r*b)%p;
+  }
+  root=r;
+ }
+ const other=p-root;
+ return {
+  encoded:`n = ${n}, p = ${p}\n\nSquare roots modulo ${p}:\n  ${root}\n  ${other}\n\nCheck: ${root}^2 mod ${p} = ${(root*root)%p}\n       ${other}^2 mod ${p} = ${(other*other)%p}`,
+  decoded:`Tonelli-Shanks computes a square root of n modulo a prime p. It first checks whether n is a quadratic residue using Euler's criterion.\n\nIf p ≡ 3 (mod 4), the root is simply n^((p+1)/4). Otherwise the algorithm iterates with a non-residue z until it finds the root.`,
+  steps:Number(s)+1,units:Number(s),tokens:2
+ };
+}
+function demoHensel(text){
+ const [n,p]=parseNums(text).map(n=>BigInt(n));
+ if(n===undefined||p===undefined)throw Error('Enter n and prime p');
+ function modpow(b,e,m){let r=1n;b=((b%m)+m)%m;while(e>0n){if(e&1n)r=(r*b)%m;b=(b*b)%m;e>>=1n}return r}
+ // find a root of x^2 = n mod p first
+ let root=null;
+ for(let x=1n;x<p;x++){if((x*x)%p===n%p){root=x;break}}
+ if(root===null)return{encoded:`No square root of ${n} modulo ${p}.`,decoded:'Cannot lift a root that does not exist modulo p.',steps:0,units:0,tokens:0};
+ // lift to p^3
+ let x=root,modulus=p;
+ const steps=[];
+ for(let k=0;k<3;k++){
+  const f=(x*x-n)%(modulus*p);
+  const df=(2n*x)%p;
+  const inv=modInv(Number(df),Number(p));
+  x=(x-BigInt(inv)*f)%(modulus*p);
+  x=((x%(modulus*p))+(modulus*p))%(modulus*p);
+  modulus*=p;
+  steps.push(`lift to mod ${modulus}: root = ${x}, check = ${(x*x-n)%modulus}`);
+ }
+ return {
+  encoded:`n = ${n}, p = ${p}\n\nInitial root mod ${p}: ${root}\n\n${steps.join('\n')}`,
+  decoded:`Hensel lifting takes a solution modulo p and refines it to a solution modulo p^k. It is the p-adic analogue of Newton's method.\n\nAt each step, the correction is f(x) / f'(x) modulo p. The derivative must not be divisible by p, otherwise the root may not lift uniquely.`,
+  steps:3,units:3,tokens:1
+ };
+}
+function demoKaratsuba(text){
+ const [x,y]=parseNums(text).map(n=>Math.trunc(n));
+ if(x===undefined||y===undefined)throw Error('Enter two integers');
+ function karatsuba(a,b){
+  if(a<10||b<10)return a*b;
+  const n=Math.max(String(a).length,String(b).length);
+  const half=Math.floor(n/2);
+  const p10=Math.pow(10,half);
+  const a1=Math.floor(a/p10),a0=a%p10;
+  const b1=Math.floor(b/p10),b0=b%p10;
+  const ac=karatsuba(a1,b1);
+  const bd=karatsuba(a0,b0);
+  const adbc=karatsuba(a1+a0,b1+b0)-ac-bd;
+  return ac*Math.pow(10,2*half)+adbc*p10+bd;
+ }
+ const result=karatsuba(x,y);
+ const naive=x*y;
+ return {
+  encoded:`x = ${x}, y = ${y}\n\nKaratsuba result: ${result}\nNaive result:     ${naive}\nMatch: ${result===naive}`,
+  decoded:`Karatsuba multiplies two numbers by splitting them into high and low halves and using three recursive multiplications instead of four.\n\nThe asymptotic complexity is O(n^1.585) compared to O(n^2) for the naive algorithm. The constant factor is larger, so Karatsuba is only faster above a threshold size.`,
+  steps:1,units:1,tokens:2
+ };
+}
+function demoPrimeCounting(text){
+ const x=Math.min(parseInt(text.trim())||100,100000);
+ const isPrime=new Uint8Array(x+1).fill(1);
+ isPrime[0]=isPrime[1]=0;
+ for(let p=2;p*p<=x;p++)if(isPrime[p])for(let m=p*p;m<=x;m+=p)isPrime[m]=0;
+ let count=0;
+ for(let i=2;i<=x;i++)count+=isPrime[i];
+ const approx=x/Math.log(x);
+ const li=((t)=>{let sum=0;for(let k=1;k<=100;k++){const lk=Math.log(t);sum+=(k%2?1:-1)*Math.pow(lk,k)/(k*Math.factorial(k))}return sum})(x);
+ return {
+  encoded:`x = ${x}\n\nπ(${x}) = ${count}\n\nx / ln x = ${approx.toFixed(0)}\nli(x) approximation = ${li.toFixed(0)}`,
+  decoded:`π(x) counts the primes up to x. The prime number theorem says π(x) ∼ x / ln x for large x.\n\nThe logarithmic integral li(x) is a better approximation. The difference between π(x) and li(x) is related to the Riemann hypothesis.`,
+  steps:x,units:count,tokens:count
+ };
+}
+function demoArithFunc(text){
+ const n=Math.abs(parseInt(text.trim()))||12;
+ function factorize(m){const f={};let d=2;while(d*d<=m){while(m%d===0){f[d]=(f[d]||0)+1;m/=d}d++}if(m>1)f[m]=(f[m]||0)+1;return f}
+ const factors=factorize(n);
+ let phi=n;for(const p of Object.keys(factors))phi-=phi/Number(p);
+ let sigma=1;for(const[p,e]of Object.entries(factors))sigma*=(Math.pow(Number(p),e+1)-1)/(Number(p)-1);
+ let tau=1;for(const e of Object.values(factors))tau*=e+1;
+ const divisors=[];for(let d=1;d<=n;d++)if(n%d===0)divisors.push(d);
+ return {
+  encoded:`n = ${n}\n\nPrime factorization: ${Object.entries(factors).map(([p,e])=>`${p}^${e}`).join(' × ')}\n\nφ(${n}) = ${phi}\nσ(${n}) = ${sigma}\nτ(${n}) = ${tau}\n\nDivisors: ${divisors.join(', ')}`,
+  decoded:`φ(n) counts the integers up to n that are coprime to n. σ(n) is the sum of the divisors. τ(n) is the number of divisors.\n\nAll three are multiplicative: if gcd(m, n) = 1 then f(mn) = f(m) f(n). This lets you compute them from the prime factorization.`,
+  steps:Object.keys(factors).length,units:divisors.length,tokens:divisors.length
+ };
+}
+
+/* ============================================================
+   Lab dispatcher
+   ============================================================ */
+function runLab(l,initial){
+ const input=$('#labInput').value;
+ let res;
+ try{
+  if(!initial){$('#labEncoded').textContent='Running…';$('#labDecoded').textContent=''}
+  switch(l.demo){
+   case'gcd':res=demoGcd(input);break;
+   case'euclidean-ext':res=demoEuclideanExt(input);break;
+   case'binary-gcd':res=demoBinaryGcd(input);break;
+   case'modexp':res=demoModexp(input);break;
+   case'modinv':res=demoModinv(input);break;
+   case'crt':res=demoCrt(input);break;
+   case'euler-fermat':res=demoEulerFermat(input);break;
+   case'sieve':res=demoSieve(input);break;
+   case'miller-rabin':res=demoMillerRabin(input);break;
+   case'pollard-rho':res=demoPollardRho(input);break;
+   case'pollard-pm1':res=demoPollardPm1(input);break;
+   case'bsgs':res=demoBsgs(input);break;
+   case'pohlig-hellman':res=demoPohligHellman(input);break;
+   case'tonelli':res=demoTonelli(input);break;
+   case'hensel':res=demoHensel(input);break;
+   case'karatsuba':res=demoKaratsuba(input);break;
+   case'prime-counting':res=demoPrimeCounting(input);break;
+   case'arith-func':res=demoArithFunc(input);break;
+   default:throw Error('No interactive implementation is available for this lesson.');
+  }
+ }catch(e){
+  res={encoded:'Input or runtime error',decoded:e.message,steps:0,units:0,tokens:0};
+ }
+ $('#labEncoded').textContent=res.encoded;
+ $('#labDecoded').textContent=res.decoded;
+ if(!initial)toast('Lab complete');
+}
+
+/* ============================================================
+   State and shell
+   ============================================================ */
+const state={page:'home',current:null,completed:new Set(),bookmarks:new Set(),theme:'system',drafts:{}};
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){const el=$('#toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1900)}
+function save(){try{localStorage.setItem('az-number-theory-lab-v1',JSON.stringify({schemaVersion:1,completed:[...state.completed],bookmarks:[...state.bookmarks],theme:state.theme,current:state.current,drafts:state.drafts}))}catch(e){}}
+function load(){try{const d=JSON.parse(localStorage.getItem('az-number-theory-lab-v1')||'null');if(!d||d.schemaVersion!==1)return;
+ state.completed=new Set((d.completed||[]).filter(id=>byId[id]));
+ state.bookmarks=new Set((d.bookmarks||[]).filter(id=>byId[id]));
+ state.theme=['system','light','dark'].includes(d.theme)?d.theme:'system';
+ state.current=byId[d.current]?d.current:null;
+ state.drafts=d.drafts&&typeof d.drafts==='object'?d.drafts:{};}catch(e){}}
+function applyTheme(){let t=state.theme;if(t==='system')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.theme=t;$('#themeSelect').value=state.theme}
+function getChapter(id){return CHAPTERS.find(c=>c.ids.includes(id))||CHAPTERS[0]}
+function progress(){
+ const n=state.completed.size,t=LESSONS.length;
+ $('#progressText').textContent=`${n} / ${t}`;
+ $('#progressFill').style.width=(n/t*100)+'%';
+ $('#lessonCount').textContent=t+' lessons';
+ $('#catalogCount').textContent=`${CHAPTERS.length} chapters · ${t} lessons · ${LESSONS.filter(l=>l.demo&&l.demo!=='none').length} labs`;
+ $('#progressBar').setAttribute('aria-valuenow',String(Math.round(n/t*100)));
+}
+function renderTree(){
+ const q=$('#searchInput').value.toLowerCase().trim(),ch=$('#chapterFilter').value;
+ const root=$('#courseTree');root.textContent='';
+ for(const c of CHAPTERS){
+  if(ch!=='all'&&c.id!==ch)continue;
+  const rows=c.ids.map(id=>byId[id]).filter(x=>x&&(!q||(x.title+' '+x.summary+' '+x.kind+' '+c.title).toLowerCase().includes(q)));
+  if(!rows.length)continue;
+  const group=document.createElement('section');
+  const label=document.createElement('div');label.className='group-label';
+  label.innerHTML=`<span>${esc(c.title)}</span><span>${rows.length}</span>`;
+  group.append(label);
+  rows.forEach(l=>{
+   const b=document.createElement('button');b.type='button';
+   b.className='link'+(state.current===l.id?' active':'');
+   b.dataset.lesson=l.id;
+   b.innerHTML=`<span class="num">${String(LESSONS.indexOf(l)+1).padStart(2,'0')}</span><span class="name">${esc(l.title)}</span>${state.completed.has(l.id)?'<span class="done" aria-label="completed">✓</span>':''}`;
+   group.append(b);
+  });
+  root.append(group);
+ }
+ if(!root.children.length)root.innerHTML='<p class="muted">No matching lessons. Try another search.</p>';
+ progress();
+}
+function listToHTML(a){return `<ol class="steps">${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>`}
+function refsHTML(r){return r&&r.length?`<div class="references">${r.map(x=>`<a target="_blank" rel="noopener noreferrer" href="${esc(x[1])}">${esc(x[0])} ↗</a>`).join('')}</div>`:'<p class="muted">See the recommended textbooks and papers for a full treatment.</p>'}
+function codeRecord(l){if(l.codeKey==='none')return null;return CODE[l.codeKey]||CODE[l.demo]||null}
+function codeText(l){
+ const c=codeRecord(l);
+ if(c&&c.python)return c.python;
+ return '# CONCEPT OUTLINE, NOT EXECUTABLE PYTHON\n# Lesson: '+l.title+'\n\n# Core idea\n# '+String(l.summary||'').replace(/\n/g,'\n# ')+'\n\n# Pseudocode from the lesson\n'+String(l.pseudo||'').split('\n').map(x=>'# '+x).join('\n')+'\n';
+}
+function statusClass(l){return /Runnable/.test(l.status)?'good':'warn'}
+
+function renderLesson(id){
+ const l=byId[id];if(!l){renderHome();return}
+ state.page='lesson';state.current=id;
+ const c=getChapter(id);const index=LESSONS.indexOf(l);const next=LESSONS[(index+1)%LESSONS.length];
+ const hasDemo=l.demo&&l.demo!=='none';
+ const demoArea=hasDemo?`<section class="panel"><div class="panel-head"><h2>${esc(l.demoTitle||'Interactive teaching lab')}</h2><p>Everything runs in your browser as a teaching implementation. For real work use GMP, PARI/GP, SageMath or another vetted library.</p></div><div class="body"><div class="lab-top"><label for="labInput">Input</label><button class="btn" id="resetSample">Reset sample</button><button class="btn primary" id="runLab">Run lab</button></div><textarea class="lab-input" id="labInput" aria-label="Lab input">${esc(l.sample||'')}</textarea><div class="notice info"><strong>Format:</strong> enter the numbers requested, separated by spaces or commas. For congruence systems, use one congruence per line.</div><div class="lab-cols"><div><div class="label">Output</div><div class="lab-output" id="labEncoded">Run the lab to see output.</div></div><div><div class="label">Explanation</div><div class="lab-output" id="labDecoded">Step notes appear here.</div></div></div></div></section>`:'';
+ const references=refsHTML(l.refs);
+ const code=state.drafts[id]??codeText(l);
+ $('#mainView').innerHTML=`<div class="breadcrumb">Number Theory Lab / ${esc(c.title)}</div>
+<header class="header">
+ <div class="eyebrow">LESSON ${String(index+1).padStart(2,'0')} · ${esc(l.kind)}</div>
+ <h1>${esc(l.title)}</h1>
+ <p>${esc(l.summary)}</p>
+ <div class="tags"><span class="tag">Level ${l.level}</span><span class="tag ${statusClass(l)}">${esc(l.status)}</span><span class="tag">${esc(c.title.replace(/^\d+\.\s*/,''))}</span></div>
+ <div class="header-actions">
+  <button class="btn" id="bookmarkBtn">${state.bookmarks.has(id)?'★ Bookmarked':'☆ Bookmark'}</button>
+  <button class="btn primary" id="completeBtn">${state.completed.has(id)?'✓ Completed':'Mark complete'}</button>
+ </div>
+</header>
+<section class="panel"><div class="panel-head"><h2>1. Understand the idea</h2><p>Plain language and a mental picture</p></div><div class="body idea"><div><p>${esc(l.summary)}</p><p><strong>What problem it solves:</strong> ${esc(l.problem)}</p><div class="takeaway"><strong>Takeaway:</strong> ${esc(l.output)}</div></div><aside class="mental"><small>Mental picture</small><strong>${esc(l.mental)}</strong><p>${esc(l.mentalText)}</p></aside></div></section>
+<section class="panel"><div class="panel-head"><h2>2. Input and output</h2><p>Know what goes in and what comes out</p></div><div class="body two"><div class="mini"><h3>Input</h3><p>${esc(l.input)}</p></div><div class="mini"><h3>Output</h3><p>${esc(l.output)}</p></div></div></section>
+<section class="panel"><div class="panel-head"><h2>3. How it works</h2><p>Step by step, with the key rule that makes it correct</p></div><div class="body two"><div>${listToHTML(l.steps)}<div class="takeaway" style="margin-top:14px"><strong>Key rule:</strong> ${esc(l.invariant)}</div></div><pre class="pseudo">${esc(l.pseudo)}</pre></div><div class="table-wrap" style="margin-top:16px"><table><thead><tr><th>Step</th><th>What happens</th><th>Why it matters</th></tr></thead><tbody>${l.trace.map(r=>`<tr>${r.map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>
+${demoArea}
+<section class="panel"><div class="panel-head"><h2>4. Cost and stability</h2><p>Costs depend on input size and the exact algorithm. These are scope labels, not universal benchmarks.</p></div><div class="body"><div class="tiles">${l.complexity.map((x,i)=>`<div class="tile"><span>${['Time','Storage','Numerics'][i]}</span><strong>${esc(x.split(' ').slice(0,2).join(' '))}</strong><small>${esc(x)}</small></div>`).join('')}</div><div class="two" style="margin-top:12px"><div class="mini"><h3>Strengths</h3><p>${esc(l.strength)}</p></div><div class="mini"><h3>Limits</h3><p>${esc(l.limits)}</p></div></div></div></section>
+<section class="panel"><div class="panel-head"><h2>5. Code and usage</h2><p>Reference code is for learning. Real number theory code should use GMP, PARI/GP, SageMath or another vetted library.</p></div><div class="code-head"><div><span class="tag">${codeRecord(l)?'Python example':'Concept outline, not executable'}</span> <span class="tag">Editable</span></div><div class="header-actions" style="margin:0"><button class="btn" id="copyCode">Copy code</button><button class="btn" id="downloadCode">Download</button></div></div><textarea id="codeEditor" class="code-editor" spellcheck="false" aria-label="Editable Python code">${esc(code)}</textarea><div class="code-foot"><span>${codeRecord(l)?'Reference example. The in-page lab runs its own JavaScript implementation.':'Lesson-specific outline, not an implementation.'}</span><span id="codeStatus">Local draft</span></div><div class="body"><div class="mini"><h3>Where it is used</h3><p>${esc(l.uses)}</p></div><div class="notice" style="margin-top:12px"><strong>Common pitfall:</strong> ${esc(l.pitfall)}</div></div></section>
+<section class="panel"><div class="panel-head"><h2>6. Choices and alternatives</h2><p>Pick based on the input size, structure and required guarantee</p></div><div class="body two"><div class="mini"><h3>When to use this</h3><p>${esc(l.strength)}</p></div><div class="mini"><h3>When to use something else</h3><p>${esc(l.limits)}</p></div></div></section>
+<section class="panel"><div class="panel-head"><h2>7. Check yourself</h2><p>Try to answer before you open the explanation</p></div><div class="body"><details class="practice"><summary>${esc(l.question)}</summary><p>${esc(l.answer)}</p></details></div></section>
+<section class="panel"><div class="panel-head"><h2>8. References</h2><p>Standard references for this topic</p></div><div class="body">${references}<p class="muted" style="font-size:11.5px;margin-top:14px">The labs on this page are teaching implementations. For production work use GMP, PARI/GP, SageMath or another vetted library.</p></div></section>
+<footer class="footer"><span>Az Number Theory Lab · local learning</span><span>Lesson ${index+1} of ${LESSONS.length} · Next: ${esc(next.title)}</span><button class="btn" id="nextLesson">Next →</button></footer>`;
+
+ $('#bookmarkBtn').onclick=()=>{state.bookmarks.has(id)?state.bookmarks.delete(id):state.bookmarks.add(id);save();renderLesson(id);toast(state.bookmarks.has(id)?'Bookmarked':'Bookmark removed')};
+ $('#completeBtn').onclick=()=>{state.completed.has(id)?state.completed.delete(id):state.completed.add(id);save();renderTree();renderLesson(id);toast(state.completed.has(id)?'Lesson completed':'Completion removed')};
+ $('#nextLesson').onclick=()=>openLesson(next.id);
+ $('#copyCode').onclick=async()=>{const v=$('#codeEditor').value;try{await navigator.clipboard.writeText(v);toast('Code copied')}catch{const ta=$('#codeEditor');ta.select();document.execCommand('copy');toast('Code copied')}};
+ $('#downloadCode').onclick=()=>{const r=codeRecord(l);downloadText(`${id}.${r?'py':'txt'}`,$('#codeEditor').value,r?'text/x-python':'text/plain')};
+ $('#codeEditor').addEventListener('input',()=>{state.drafts[id]=$('#codeEditor').value;save();$('#codeStatus').textContent='Draft saved locally'});
+ if(hasDemo){
+  $('#runLab').onclick=()=>runLab(l);
+  $('#resetSample').onclick=()=>{$('#labInput').value=l.sample||'';$('#labEncoded').textContent='Run the lab to see output.';$('#labDecoded').textContent='Step notes appear here.'};
+  runLab(l,true);
+ }
+ renderTree();save();
+ if(location.hash!==`#${id}`)history.replaceState(null,'',`#${id}`);
+}
+
+function renderHome(){
+ state.page='home';
+ $('#mainView').innerHTML=`<div class="home-hero"><div class="eyebrow">AZ · ENGINEERING TOOLBOOK</div><h1>Understand number theory from the Euclidean algorithm to lattice reduction.</h1><p>A beginner friendly course covering integer arithmetic, modular arithmetic, primality testing, factorization, discrete logarithms, modular roots, fast arithmetic, prime counting and lattice algorithms. Every lesson has a plain explanation and most have a runnable lab.</p><div class="header-actions" style="margin:0"><button class="btn primary" id="startFirst">Start at the beginning</button><button class="btn" id="resumeLesson">Continue lesson</button></div></div>
+<div class="stats"><div class="stat"><strong>${CHAPTERS.length}</strong><span>chapters</span></div><div class="stat"><strong>${LESSONS.length}</strong><span>lessons</span></div><div class="stat"><strong>${LESSONS.filter(l=>l.demo&&l.demo!=='none').length}</strong><span>runnable labs</span></div><div class="stat"><strong>1</strong><span>standalone HTML file</span></div></div>
+<section class="panel"><div class="panel-head"><h2>Honest scope</h2><p>One app covers the whole curriculum. Real number theory libraries are a separate engineering project.</p></div><div class="body two"><div class="mini"><h3>What runs here</h3><p>Euclidean and extended GCD, binary GCD, modular exponentiation, modular inverse, Chinese remainder theorem, Euler and Fermat theorems, Sieve of Eratosthenes, Miller-Rabin primality test, Pollard rho and Pollard p−1 factorization, baby-step giant-step, Pohlig-Hellman, Tonelli-Shanks, Hensel lifting, Karatsuba multiplication, prime counting and arithmetic functions.</p></div><div class="mini"><h3>What does not run here</h3><p>Production implementations of ECPP, APR-CL, CFRAC, SQUFOF, Williams p+1, Toom-Cook, Schönhage-Strassen, NTT, Meissel-Lehmer, Chudnovsky, Gauss-Legendre, BBP, PSLQ, LLL and BKZ. For real work use GMP, PARI/GP, SageMath, FLINT or another vetted library.</p></div></div></section>
+<div class="panel"><div class="panel-head"><h2>Course map</h2><p>Pick a chapter. The path runs from foundations to lattice algorithms.</p></div><div class="body"><div class="chapter-cards">${CHAPTERS.map((c,i)=>`<button class="chapter-card" data-chapter="${c.id}"><span class="num">CHAPTER ${String(i+1).padStart(2,'0')} · ${c.ids.length} LESSONS</span><strong>${esc(c.title.replace(/^\d+\.\s*/,''))}</strong><p>${esc(c.desc)}</p></button>`).join('')}</div></div></div>
+<footer class="footer"><span>Az Number Theory Lab</span><span>Single file · no external runtime dependencies</span></footer>`;
+ $('#startFirst').onclick=()=>openLesson('divisibility-gcd');
+ $('#resumeLesson').onclick=()=>openLesson(state.current&&byId[state.current]?state.current:'divisibility-gcd');
+ $('#mainView').querySelectorAll('[data-chapter]').forEach(b=>b.onclick=()=>{const c=CHAPTERS.find(x=>x.id===b.dataset.chapter);if(c)openLesson(c.ids[0])});
+}
+
+function renderProgressPage(){
+ state.page='progress';
+ $('#mainView').innerHTML=`<div class="breadcrumb">Number Theory Lab / Bookmarks & progress</div><header class="header"><div class="eyebrow">LOCAL ONLY</div><h1>Bookmarks and progress</h1><p>Your progress stays in this browser. Export the JSON to move it or keep a backup.</p></header>
+<section class="panel"><div class="panel-head"><h2>Completed lessons</h2></div><div class="body">${state.completed.size?`<div class="references">${[...state.completed].map(id=>`<a href="#${id}" data-open="${id}">${esc(byId[id].title)}</a>`).join('')}</div>`:'<p class="muted">No lessons marked complete yet.</p>'}</div></section>
+<section class="panel"><div class="panel-head"><h2>Bookmarks</h2></div><div class="body">${state.bookmarks.size?`<div class="references">${[...state.bookmarks].map(id=>`<a href="#${id}" data-open="${id}">${esc(byId[id].title)}</a>`).join('')}</div>`:'<p class="muted">No bookmarks yet.</p>'}</div></section>
+<section class="panel"><div class="panel-head"><h2>Progress data</h2></div><div class="body"><div class="header-actions" style="margin:0"><button class="btn primary" id="exportProgress">Export progress JSON</button><button class="btn" id="clearProgress">Clear completion marks</button></div><p class="muted" style="font-size:12.5px;margin-top:14px">Import accepts only known lesson IDs and a supported schema version.</p></div></section>`;
+ $('#mainView').querySelectorAll('[data-open]').forEach(a=>a.onclick=e=>{e.preventDefault();openLesson(a.dataset.open)});
+ $('#exportProgress').onclick=exportProgress;
+ $('#clearProgress').onclick=()=>{if(confirm('Clear all completion marks?')){state.completed.clear();save();renderProgressPage();renderTree();toast('Completion marks cleared')}};
+}
+
+function openLesson(id){if(!byId[id])return;renderLesson(id);renderTree();$('#mainView').focus({preventScroll:true});window.scrollTo(0,0)}
+function downloadText(name,text,type='text/plain'){const blob=new Blob([text],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),800)}
+function exportProgress(){downloadText('az-number-theory-lab-progress.json',JSON.stringify({schemaVersion:1,completed:[...state.completed],bookmarks:[...state.bookmarks],theme:state.theme,current:state.current,drafts:state.drafts},null,2),'application/json');toast('Progress exported')}
+function importProgressFile(file){
+ if(file.size>2_000_000){toast('Import rejected: file too large');return}
+ const r=new FileReader();
+ r.onload=()=>{try{
+  const d=JSON.parse(r.result);
+  if(!d||d.schemaVersion!==1||!Array.isArray(d.completed)||!Array.isArray(d.bookmarks)||typeof d.drafts!=='object')throw Error('bad schema');
+  if([...d.completed,...d.bookmarks].some(id=>typeof id!=='string'||!byId[id]))throw Error('unknown id');
+  state.completed=new Set(d.completed);
+  state.bookmarks=new Set(d.bookmarks);
+  state.theme=['system','light','dark'].includes(d.theme)?d.theme:'system';
+  state.current=byId[d.current]?d.current:null;
+  state.drafts=Object.fromEntries(Object.entries(d.drafts).filter(([k,v])=>byId[k]&&typeof v==='string'&&v.length<100000));
+  applyTheme();save();renderTree();
+  state.current?openLesson(state.current):renderHome();
+  toast('Progress imported');
+ }catch(e){toast('Import rejected: invalid progress data')}};
+ r.readAsText(file);
+}
+
+function bindGlobal(){
+ $('#themeSelect').onchange=()=>{state.theme=$('#themeSelect').value;applyTheme();save()};
+ $('#printBtn').onclick=()=>print();
+ $('#exportBtn').onclick=exportProgress;
+ $('#importBtn').onclick=()=>$('#importFile').click();
+ $('#importFile').onchange=e=>{if(e.target.files[0])importProgressFile(e.target.files[0]);e.target.value=''};
+ $('#searchInput').oninput=renderTree;
+ $('#chapterFilter').onchange=renderTree;
+ $('#homeLink').onclick=e=>{e.preventDefault();renderHome();history.replaceState(null,'','#home')};
+ $('#courseTree').onclick=e=>{const b=e.target.closest('[data-lesson]');if(b)openLesson(b.dataset.lesson)};
+ document.querySelectorAll('[data-page="home"]').forEach(b=>b.onclick=renderHome);
+ document.querySelectorAll('[data-page="progress"]').forEach(b=>b.onclick=renderProgressPage);
+ document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();$('#searchInput').focus()}
+  if(e.key.toLowerCase()==='t'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){
+   state.theme=state.theme==='dark'?'light':state.theme==='light'?'system':'dark';
+   applyTheme();save();
+  }
+ });
+}
+
+function init(){
+ load();
+ applyTheme();
+ CHAPTERS.forEach(c=>{const op=document.createElement('option');op.value=c.id;op.textContent=c.title;$('#chapterFilter').append(op)});
+ bindGlobal();
+ renderTree();
+ const hash=location.hash.replace(/^#/,'');
+ if(hash&&byId[hash])renderLesson(hash);
+ else if(state.current&&byId[state.current])renderLesson(state.current);
+ else renderHome();
+ progress();
+}
+init();
+</script></body></html>
